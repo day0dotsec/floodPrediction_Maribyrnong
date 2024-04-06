@@ -23,9 +23,11 @@ import zipfile
 # Set page title and favicon
 st.set_page_config(page_title="Rain Prediction for Australia", page_icon="🌧️")
 
-st.write("Asaf Cem Akın")
-st.write("https://www.linkedin.com/in/asafcemakin/")
-
+st.sidebar.markdown("""
+    ---
+    **Asaf Cem Akın**  
+    [LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)
+""")
 
 df = pd.read_csv('weatherAUS.csv')
 df_api = pd.read_csv('meteo_api.csv')
