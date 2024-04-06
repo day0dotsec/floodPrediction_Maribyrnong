@@ -1211,5 +1211,6 @@ if selected_section == "Test":
     st.dataframe(results_df, use_container_width=True)
 
 
-
+st.markdown("Asaf Cem Akın")
+st.markdown("https://www.linkedin.com/in/asafcemakin/")
 
