@@ -1210,9 +1210,8 @@ if selected_section == "Test":
     st.write(f"Prediction and Actual result for RainTomorrow at {selected_location} on {selected_date}:")
     st.dataframe(results_df, use_container_width=True)
 
-st.sidebar.subheader("""
-    ---
-    **Asaf Cem Akın**  
-    [LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)
-""")
+with st.sidebar.beta_expander("Connect & Contribute"):
+    # LinkedIn
+    st.markdown("[![Connect on LinkedIn](https://img.shields.io/badge/Connect%20on-LinkedIn-blue.svg?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/asafcemakin/)")
+    st.write("Asaf Cem Akın")
 
