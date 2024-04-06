@@ -23,6 +23,8 @@ import zipfile
 # Set page title and favicon
 st.set_page_config(page_title="Rain Prediction for Australia", page_icon="🌧️")
 
+st.write("Asaf Cem Akın")
+st.write("https://www.linkedin.com/in/asafcemakin/")
 
 
 df = pd.read_csv('weatherAUS.csv')
@@ -1211,6 +1213,4 @@ if selected_section == "Test":
     st.dataframe(results_df, use_container_width=True)
 
 
-st.markdown("Asaf Cem Akın")
-st.markdown("https://www.linkedin.com/in/asafcemakin/")
 
