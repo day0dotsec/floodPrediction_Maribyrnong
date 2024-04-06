@@ -23,11 +23,7 @@ import zipfile
 # Set page title and favicon
 st.set_page_config(page_title="Rain Prediction for Australia", page_icon="🌧️")
 
-st.sidebar.markdown("""
-    ---
-    **Asaf Cem Akın**  
-    [LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)
-""")
+
 
 df = pd.read_csv('weatherAUS.csv')
 df_api = pd.read_csv('meteo_api.csv')
@@ -108,7 +104,7 @@ def grab_col_names(dataframe, cat_th=3, car_th=50):
 cat_cols, num_cols, cat_but_car = grab_col_names(df)
 
 
-
+st.sidebar.title('Rain Prediction for Australia')
 # Radio button for selecting section
 selected_section = st.sidebar.radio("Select Section", ["Data Overview",
                                                        "EDA",
@@ -1215,4 +1211,8 @@ if selected_section == "Test":
     st.dataframe(results_df, use_container_width=True)
 
 
-
+st.sidebar.markdown("""
+    ---
+    **Asaf Cem Akın**  
+    [LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)
+""")
