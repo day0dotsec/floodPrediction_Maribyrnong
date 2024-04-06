@@ -1209,9 +1209,23 @@ if selected_section == "Test":
     # Display the prediction and actual result in a single DataFrame
     st.write(f"Prediction and Actual result for RainTomorrow at {selected_location} on {selected_date}:")
     st.dataframe(results_df, use_container_width=True)
-    
+
+###############################################
+name = "Asaf Cem Akın"
+st.sidebar.header(name)
+
 # Add a link to your LinkedIn profile
 linkedin_profile_url = 'https://www.linkedin.com/in/asafcemakin/'
 linkedin_icon = 'https://img.icons8.com/fluent/48/000000/linkedin.png'
-st.markdown(f'[![LinkedIn]( {linkedin_icon} )]({linkedin_profile_url})')
+
+# Display your name and LinkedIn icon on the sidebar
+col1, col2 = st.sidebar.beta_columns([1, 5])
+with col1:
+    st.image(linkedin_icon, width=30)
+with col2:
+    st.sidebar.markdown(f"[Your Name]({linkedin_profile_url})")
+
+# Display project date
+project_date = "March 2024"
+st.sidebar.subheader(f"Project Date: {project_date}")
 
