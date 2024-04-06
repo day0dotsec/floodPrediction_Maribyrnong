@@ -1210,8 +1210,9 @@ if selected_section == "Test":
     st.write(f"Prediction and Actual result for RainTomorrow at {selected_location} on {selected_date}:")
     st.dataframe(results_df, use_container_width=True)
 
-with st.sidebar.beta_expander("Connect & Contribute"):
-    # LinkedIn
-    st.markdown("[![Connect on LinkedIn](https://img.shields.io/badge/Connect%20on-LinkedIn-blue.svg?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/asafcemakin/)")
-    st.write("Asaf Cem Akın")
+# Display LinkedIn profile photo
+st.image('https://media.licdn.com/dms/image/D4D35AQEc5b0zJ-XeXg/profile-framedphoto-shrink_200_200/0/1688990679588?e=1712995200&v=beta&t=iu-c2x5HDwI5QDn7jwTOZcZtLutUtrR6t6aJNb6GrAY', width=100)
+
+# Add a link to your LinkedIn profile
+st.markdown("[Link to LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)")
 
