@@ -1221,5 +1221,5 @@ st.sidebar.markdown(f'[![LinkedIn]( {linkedin_icon} )]({linkedin_profile_url})')
 
 # Display project date
 project_date = "March 2024"
-st.sidebar.subheader("{project_date}")
+st.sidebar.subheader(f"{project_date}")
 
