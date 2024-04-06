@@ -1210,9 +1210,9 @@ if selected_section == "Test":
     st.write(f"Prediction and Actual result for RainTomorrow at {selected_location} on {selected_date}:")
     st.dataframe(results_df, use_container_width=True)
 
-
-st.sidebar.markdown("""
+st.sidebar.subheader("""
     ---
     **Asaf Cem Akın**  
     [LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)
 """)
+
