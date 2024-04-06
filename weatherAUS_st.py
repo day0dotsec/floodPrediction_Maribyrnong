@@ -1209,7 +1209,9 @@ if selected_section == "Test":
     # Display the prediction and actual result in a single DataFrame
     st.write(f"Prediction and Actual result for RainTomorrow at {selected_location} on {selected_date}:")
     st.dataframe(results_df, use_container_width=True)
-
+    
+# Add a link to your LinkedIn profile
 linkedin_profile_url = 'https://www.linkedin.com/in/asafcemakin/'
-st.markdown(f'<a href="{linkedin_profile_url}" target="_blank"><i class="fab fa-linkedin fa-3x"></i></a>')
+linkedin_icon = 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png'
+st.markdown(f'[![LinkedIn]( {linkedin_icon} )]({linkedin_profile_url})')
 
