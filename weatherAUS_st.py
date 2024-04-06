@@ -1210,9 +1210,6 @@ if selected_section == "Test":
     st.write(f"Prediction and Actual result for RainTomorrow at {selected_location} on {selected_date}:")
     st.dataframe(results_df, use_container_width=True)
 
-# Display LinkedIn profile photo
-st.image('https://media.licdn.com/dms/image/D4D35AQEc5b0zJ-XeXg/profile-framedphoto-shrink_200_200/0/1688990679588?e=1712995200&v=beta&t=iu-c2x5HDwI5QDn7jwTOZcZtLutUtrR6t6aJNb6GrAY', width=100)
-
-# Add a link to your LinkedIn profile
-st.markdown("[Link to LinkedIn Profile](https://www.linkedin.com/in/asafcemakin/)")
+linkedin_profile_url = 'https://www.linkedin.com/in/asafcemakin/'
+st.markdown(f'<a href="{linkedin_profile_url}" target="_blank"><i class="fab fa-linkedin fa-3x"></i></a>')
 
