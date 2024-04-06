@@ -1212,6 +1212,6 @@ if selected_section == "Test":
     
 # Add a link to your LinkedIn profile
 linkedin_profile_url = 'https://www.linkedin.com/in/asafcemakin/'
-linkedin_icon = 'https://www.rawpixel.com/image/3344968/free-illustration-png-linkedin-app-application'
+linkedin_icon = 'https://img.icons8.com/fluent/48/000000/linkedin.png'
 st.markdown(f'[![LinkedIn]( {linkedin_icon} )]({linkedin_profile_url})')
 
