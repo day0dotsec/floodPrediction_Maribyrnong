@@ -21,7 +21,7 @@ from sklearn.metrics import classification_report
 import zipfile
 
 # Set page title and favicon
-st.set_page_config(page_title="Rain Prediction for Australia", page_icon="🌧️")
+st.set_page_config(page_title="Maribyrnong City Council: Flood and Overflow Prediction", page_icon="🌧️")
 
 
 
@@ -104,7 +104,7 @@ def grab_col_names(dataframe, cat_th=3, car_th=50):
 cat_cols, num_cols, cat_but_car = grab_col_names(df)
 
 
-st.sidebar.title('Rain Prediction for Australia')
+st.sidebar.title('Maribyrnong City Council: Flood and Overflow Prediction')
 # Radio button for selecting section
 selected_section = st.sidebar.radio("Select Section", ["Data Overview",
                                                        "EDA",
