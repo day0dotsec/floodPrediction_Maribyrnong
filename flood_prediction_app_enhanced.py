@@ -202,25 +202,41 @@ st.markdown("""
     }
     
     /* Button Enhancements */
-    .stButton > button {
-        background: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem 2rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    .stButton > button, .stButton button, button[kind="primary"], 
+    button[data-testid="baseButton-primary"], [data-testid="stButton"] button {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.75rem 2rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2) !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
     }
     
-    .stButton > button:hover {
-        background: #1d4ed8;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    .stButton > button *, .stButton button *, button[kind="primary"] *,
+    button[data-testid="baseButton-primary"] *, [data-testid="stButton"] button * {
+        color: #ffffff !important;
     }
     
-    .stButton > button:active {
-        transform: translateY(0px);
+    .stButton > button:hover, .stButton button:hover, button[kind="primary"]:hover,
+    button[data-testid="baseButton-primary"]:hover, [data-testid="stButton"] button:hover {
+        background: #1d4ed8 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+    }
+    
+    .stButton > button:hover *, .stButton button:hover *, button[kind="primary"]:hover *,
+    button[data-testid="baseButton-primary"]:hover *, [data-testid="stButton"] button:hover * {
+        color: #ffffff !important;
+    }
+    
+    .stButton > button:active, .stButton button:active, button[kind="primary"]:active,
+    button[data-testid="baseButton-primary"]:active, [data-testid="stButton"] button:active {
+        transform: translateY(0px) !important;
+        color: #ffffff !important;
     }
     
     /* Selectbox Enhancements */
@@ -1430,7 +1446,6 @@ def main():
             
             st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.dataframe(comparison_df, use_container_width=True, hide_index=True)
-            st.markdown('</div>', unsafe_allow_html=True)
     
     elif main_section == "🔍 Insights & Predictions":
         st.markdown('<h2 class="section-header">Real-Time Risk Assessment</h2>', unsafe_allow_html=True)

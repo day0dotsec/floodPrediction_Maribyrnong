@@ -1,1 +1,1 @@
-streamlit run myapp.py --server.fileWatcherType none
+streamlit run flood_prediction_app_enhanced.py --server.fileWatcherType none
