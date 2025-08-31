@@ -1,0 +1,1 @@
+streamlit run myapp.py --server.fileWatcherType none
