@@ -978,12 +978,22 @@ def main():
                     # Enhanced scatter plot with discrete colors for clusters
                     # Convert cluster to categorical to ensure discrete colors
                     historical_df_clustered['cluster_cat'] = historical_df_clustered['cluster'].astype(str)
+                    # Format date for better display in tooltip
+                    historical_df_clustered['date_formatted'] = historical_df_clustered['datetime'].dt.strftime('%Y-%m-%d')
                     
                     fig = px.scatter(
                         historical_df_clustered, x='temp', y='precip', 
                         color='cluster_cat', size='humidity',
+                        hover_data={'date_formatted': True, 'humidity': ':.1f', 'windspeed': ':.1f', 'cluster_cat': False},
                         title='Weather Pattern Clusters',
-                        labels={'temp': 'Temperature (°C)', 'precip': 'Precipitation (mm)', 'cluster_cat': 'Cluster'},
+                        labels={
+                            'temp': 'Temperature (°C)', 
+                            'precip': 'Precipitation (mm)', 
+                            'cluster_cat': 'Cluster',
+                            'date_formatted': 'Date',
+                            'humidity': 'Humidity (%)',
+                            'windspeed': 'Wind Speed (km/h)'
+                        },
                         color_discrete_sequence=px.colors.qualitative.Set1
                     )
                     fig.update_layout(
