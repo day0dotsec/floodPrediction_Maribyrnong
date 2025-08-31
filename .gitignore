@@ -1,5 +1,6 @@
 # Claude Code configuration
 CLAUDE.md
+.claude/
 
 # Python
 __pycache__/
