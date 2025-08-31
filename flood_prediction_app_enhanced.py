@@ -937,65 +937,76 @@ def main():
             
             with col2:
                 st.markdown('<br>', unsafe_allow_html=True)
-                if st.button("🔍 Analyze Patterns", use_container_width=True):
-                    with st.spinner("Discovering weather patterns..."):
-                        feature_cols = ['tempmax', 'tempmin', 'temp', 'humidity', 'precip', 
-                                       'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover']
-                        
-                        X = historical_df[feature_cols]
-                        scaler = StandardScaler()
-                        X_scaled = scaler.fit_transform(X)
-                        
-                        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
-                        clusters = kmeans.fit_predict(X_scaled)
-                        
-                        historical_df_clustered = historical_df.copy()
-                        historical_df_clustered['cluster'] = clusters
-                        
-                        st.markdown(f"""
-                        <div class="alert-box alert-success">
-                            <strong>✅ Pattern Analysis Complete!</strong><br>
-                            Discovered {n_clusters} distinct weather patterns in the data
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Enhanced cluster statistics
-                        cluster_stats = historical_df_clustered.groupby('cluster').agg({
-                            'flood_risk': ['count', 'sum', 'mean'],
-                            'precip': 'mean',
-                            'temp': 'mean',
-                            'humidity': 'mean'
-                        }).round(3)
-                        
-                        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
-                        st.subheader("📊 Cluster Analysis Results")
-                        st.dataframe(cluster_stats, use_container_width=True)
-                        st.markdown('</div>', unsafe_allow_html=True)
-                        
-                        # Enhanced scatter plot
-                        fig = px.scatter(
-                            historical_df_clustered, x='temp', y='precip', 
-                            color='cluster', size='humidity',
-                            title='Weather Pattern Clusters',
-                            labels={'temp': 'Temperature (°C)', 'precip': 'Precipitation (mm)'},
-                            color_discrete_sequence=px.colors.qualitative.Set3
+                analyze_button = st.button("🔍 Analyze Patterns", use_container_width=True)
+            
+            # Move results outside of column structure to use full width
+            if analyze_button:
+                with st.spinner("Discovering weather patterns..."):
+                    feature_cols = ['tempmax', 'tempmin', 'temp', 'humidity', 'precip', 
+                                   'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover']
+                    
+                    X = historical_df[feature_cols]
+                    scaler = StandardScaler()
+                    X_scaled = scaler.fit_transform(X)
+                    
+                    kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+                    clusters = kmeans.fit_predict(X_scaled)
+                    
+                    historical_df_clustered = historical_df.copy()
+                    historical_df_clustered['cluster'] = clusters
+                    
+                    st.markdown(f"""
+                    <div class="alert-box alert-success">
+                        <strong>✅ Pattern Analysis Complete!</strong><br>
+                        Discovered {n_clusters} distinct weather patterns in the data
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Enhanced cluster statistics
+                    cluster_stats = historical_df_clustered.groupby('cluster').agg({
+                        'flood_risk': ['count', 'sum', 'mean'],
+                        'precip': 'mean',
+                        'temp': 'mean',
+                        'humidity': 'mean'
+                    }).round(3)
+                    
+                    st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                    st.subheader("📊 Cluster Analysis Results")
+                    st.dataframe(cluster_stats, use_container_width=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    # Enhanced scatter plot with discrete colors for clusters
+                    # Convert cluster to categorical to ensure discrete colors
+                    historical_df_clustered['cluster_cat'] = historical_df_clustered['cluster'].astype(str)
+                    
+                    fig = px.scatter(
+                        historical_df_clustered, x='temp', y='precip', 
+                        color='cluster_cat', size='humidity',
+                        title='Weather Pattern Clusters',
+                        labels={'temp': 'Temperature (°C)', 'precip': 'Precipitation (mm)', 'cluster_cat': 'Cluster'},
+                        color_discrete_sequence=px.colors.qualitative.Set1
+                    )
+                    fig.update_layout(
+                        plot_bgcolor='#ffffff',
+                        paper_bgcolor='#ffffff',
+                        font=dict(family="Inter", size=12, color='#1e293b'),
+                        height=600,
+                        title_font_color='#1e293b',
+                        legend=dict(
+                            title=dict(text="Cluster", font=dict(color='#1e293b', size=14)),
+                            font=dict(color='#1e293b', size=12),
+                            bgcolor='rgba(248, 250, 252, 0.95)',
+                            bordercolor='#1e293b',
+                            borderwidth=2,
+                            x=1.02,
+                            y=1,
+                            xanchor='left',
+                            yanchor='top'
                         )
-                        fig.update_layout(
-                            plot_bgcolor='#ffffff',
-                            paper_bgcolor='#ffffff',
-                            font=dict(family="Inter", size=12, color='#1e293b'),
-                            height=600,
-                            title_font_color='#1e293b',
-                            legend=dict(
-                                font=dict(color='#1e293b'),
-                                bgcolor='rgba(255,255,255,0.9)',
-                                bordercolor='#e2e8f0',
-                                borderwidth=1
-                            )
-                        )
-                        fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
-                        fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
-                        st.plotly_chart(fig, use_container_width=True)
+                    )
+                    fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
+                    fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
+                    st.plotly_chart(fig, use_container_width=True)
     
     elif main_section == "📊 Data Analysis":
         st.markdown('<h2 class="section-header">Historical Data Insights</h2>', unsafe_allow_html=True)
