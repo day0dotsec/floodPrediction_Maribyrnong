@@ -10,7 +10,7 @@ def create_lstm_model():
         import torch.nn as nn
         
         class LSTMFloodPredictor(nn.Module):
-            def __init__(self, input_size, hidden_size, num_layers, output_size, dropout=0.2):
+            def __init__(self, input_size, hidden_size, num_layers, output_size=3, dropout=0.2):
                 super(LSTMFloodPredictor, self).__init__()
                 self.hidden_size = hidden_size
                 self.num_layers = num_layers
@@ -18,8 +18,8 @@ def create_lstm_model():
                 self.lstm = nn.LSTM(input_size, hidden_size, num_layers, 
                                    batch_first=True, dropout=dropout)
                 self.dropout = nn.Dropout(dropout)
-                self.fc = nn.Linear(hidden_size, output_size)
-                self.sigmoid = nn.Sigmoid()
+                self.fc = nn.Linear(hidden_size, output_size)  # 3 classes
+                self.softmax = nn.LogSoftmax(dim=1)  # For multi-class classification
                 
             def forward(self, x):
                 h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
@@ -28,7 +28,7 @@ def create_lstm_model():
                 out, _ = self.lstm(x, (h0, c0))
                 out = self.dropout(out[:, -1, :])
                 out = self.fc(out)
-                out = self.sigmoid(out)
+                out = self.softmax(out)  # Apply log softmax for classification
                 return out
         
         return LSTMFloodPredictor, torch, nn
@@ -37,42 +37,67 @@ def create_lstm_model():
         return None, None, None
 
 def train_lstm_isolated(X, y):
-    """Train LSTM model with isolated torch imports"""
+    """Train 3-class LSTM model with isolated torch imports"""
     try:
         from sklearn.model_selection import train_test_split
+        from sklearn.metrics import accuracy_score, classification_report
+        import numpy as np
         
         LSTMFloodPredictor, torch, nn = create_lstm_model()
         if LSTMFloodPredictor is None:
             return None, 0.0, None, None
         
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                          random_state=42, stratify=y)
         
         X_train = torch.FloatTensor(X_train)
         X_test = torch.FloatTensor(X_test)
-        y_train = torch.FloatTensor(y_train).unsqueeze(1)
-        y_test = torch.FloatTensor(y_test).unsqueeze(1)
+        y_train = torch.LongTensor(y_train)  # LongTensor for class indices
+        y_test = torch.LongTensor(y_test)
         
         model = LSTMFloodPredictor(input_size=X_train.shape[2], hidden_size=50, 
-                                  num_layers=2, output_size=1)
+                                  num_layers=2, output_size=3)  # 3 classes
         
-        criterion = nn.BCELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        criterion = nn.NLLLoss()  # Negative Log Likelihood for multi-class
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
         
+        # Training loop with validation tracking
         model.train()
-        for epoch in range(100):
+        for epoch in range(150):  # More epochs for multi-class
             optimizer.zero_grad()
             outputs = model(X_train)
             loss = criterion(outputs, y_train)
             loss.backward()
             optimizer.step()
+            
+            # Print progress every 30 epochs
+            if (epoch + 1) % 30 == 0:
+                model.eval()
+                with torch.no_grad():
+                    val_outputs = model(X_test)
+                    _, val_predicted = torch.max(val_outputs.data, 1)
+                    val_accuracy = (val_predicted == y_test).float().mean()
+                    print(f"Epoch [{epoch+1}/150], Loss: {loss.item():.4f}, Val Acc: {val_accuracy:.4f}")
+                model.train()
         
+        # Final evaluation
         model.eval()
         with torch.no_grad():
             test_outputs = model(X_test)
-            test_predictions = (test_outputs > 0.5).float()
+            _, test_predictions = torch.max(test_outputs.data, 1)
             accuracy = (test_predictions == y_test).float().mean()
+            
+            # Convert to numpy for detailed metrics
+            y_test_np = y_test.numpy()
+            y_pred_np = test_predictions.numpy()
+            
+            # Print classification report
+            class_names = ['Low Risk', 'Medium Risk', 'High Risk']
+            print("\nClassification Report:")
+            print(classification_report(y_test_np, y_pred_np, target_names=class_names))
         
         return model, accuracy.item(), X_test, y_test
     
     except Exception as e:
+        print(f"Training error: {e}")
         return None, 0.0, None, None

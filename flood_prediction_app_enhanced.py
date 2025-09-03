@@ -239,6 +239,393 @@ st.markdown("""
         color: #ffffff !important;
     }
     
+    /* Calendar Styling - Comprehensive Fix */
+    [data-baseweb="calendar"] {
+        background: #ffffff !important;
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        overflow: hidden !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Remove all default borders and backgrounds */
+    [data-baseweb="calendar"] *,
+    [data-baseweb="calendar"] *::before,
+    [data-baseweb="calendar"] *::after {
+        border: none !important;
+        background: transparent !important;
+        color: #1e293b !important;
+    }
+    
+    /* Calendar container override */
+    [data-baseweb="calendar"] > div {
+        background: #ffffff !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Calendar header (month/year) */
+    [data-baseweb="calendar-header"] {
+        background: #ffffff !important;
+        padding: 1rem !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    /* Month/year text and buttons */
+    [data-baseweb="calendar-header"] * {
+        color: #1e293b !important;
+        background: transparent !important;
+        border: none !important;
+    }
+    
+    [data-baseweb="calendar-header"] button:hover {
+        background: #f1f5f9 !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Day headers (Su, Mo, Tu, etc.) */
+    [data-baseweb="calendar-month"] [role="columnheader"] {
+        background: #f8fafc !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+        padding: 0.5rem !important;
+        border: none !important;
+    }
+    
+    /* Day cells - comprehensive styling */
+    [data-baseweb="calendar-month"] [role="gridcell"] {
+        background: #ffffff !important;
+        color: #1e293b !important;
+        border: none !important;
+        border-radius: 8px !important;
+        margin: 2px !important;
+    }
+    
+    /* Day cell hover - fix black hover issue */
+    [data-baseweb="calendar-month"] [role="gridcell"]:hover {
+        background: #f1f5f9 !important;
+        color: #1e293b !important;
+        border: none !important;
+    }
+    
+    /* Selected date */
+    [data-baseweb="calendar-month"] [aria-selected="true"] {
+        background: #2563eb !important;
+        color: #ffffff !important;
+        border: none !important;
+    }
+    
+    /* Selected date hover */
+    [data-baseweb="calendar-month"] [aria-selected="true"]:hover {
+        background: #1d4ed8 !important;
+        color: #ffffff !important;
+    }
+    
+    /* Month grid container */
+    [data-baseweb="calendar-month"] {
+        background: #ffffff !important;
+        border-radius: 0 0 12px 12px !important;
+        padding: 0.5rem !important;
+    }
+    
+    /* Fix any remaining black elements */
+    [data-baseweb="calendar-month"] div {
+        background: transparent !important;
+        border: none !important;
+    }
+    
+    /* Additional comprehensive calendar fixes for black borders */
+    [data-baseweb="popover"] [data-baseweb="calendar"] {
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Calendar wrapper and all child elements */
+    [data-baseweb="calendar"],
+    [data-baseweb="calendar"] div,
+    [data-baseweb="calendar"] table,
+    [data-baseweb="calendar"] thead,
+    [data-baseweb="calendar"] tbody,
+    [data-baseweb="calendar"] tr,
+    [data-baseweb="calendar"] td,
+    [data-baseweb="calendar"] th {
+        border: none !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+    }
+    
+    /* Calendar grid specific fixes */
+    [data-baseweb="calendar"] [role="grid"] {
+        border: none !important;
+        background: #ffffff !important;
+    }
+    
+    /* Calendar cell borders - be very specific */
+    [data-baseweb="calendar"] [role="gridcell"],
+    [data-baseweb="calendar"] [role="columnheader"],
+    [data-baseweb="calendar"] [role="row"] {
+        border-top: none !important;
+        border-bottom: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Remove any outline that might appear as borders */
+    [data-baseweb="calendar"] *:focus,
+    [data-baseweb="calendar"] *:active {
+        outline: none !important;
+        border: none !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+    }
+    
+    /* Popover container that holds the calendar */
+    [data-baseweb="popover"] {
+        border: none !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Calendar popover content */
+    [data-baseweb="popover-content"] {
+        border: none !important;
+        background: #ffffff !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+    
+    /* Date Input Field Styling - Fix sizing and borders */
+    .stDateInput [data-baseweb="input"] {
+        background-color: #ffffff !important;
+        color: #1e293b !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 8px !important;
+        min-height: 44px !important;
+        width: 100% !important;
+    }
+    
+    .stDateInput [data-baseweb="input"] input {
+        background-color: transparent !important;
+        color: #1e293b !important;
+        border: none !important;
+        padding: 0.75rem !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    .stDateInput [data-baseweb="input"]:focus-within {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+        outline: none !important;
+    }
+    
+    /* Tooltip Styling Fix */
+    .stTooltip,
+    [data-baseweb="tooltip"],
+    [role="tooltip"] {
+        background-color: #1e293b !important;
+        color: #ffffff !important;
+        border: 1px solid #374151 !important;
+        border-radius: 8px !important;
+        padding: 0.5rem !important;
+        font-size: 0.875rem !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* Tooltip arrow fix */
+    .stTooltip::before,
+    [data-baseweb="tooltip"]::before {
+        border-top-color: #1e293b !important;
+    }
+    
+    /* Force all calendar and date input text to be dark */
+    .stDateInput * {
+        color: #1e293b !important;
+    }
+    
+    /* Additional aggressive calendar border fixes */
+    [data-baseweb="calendar"] *,
+    [data-baseweb="calendar"] *:before,
+    [data-baseweb="calendar"] *:after {
+        border-color: transparent !important;
+        border-width: 0px !important;
+        outline: none !important;
+    }
+    
+    /* Ensure calendar container has proper styling */
+    .stDateInput [data-baseweb="popover"] {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+    }
+    
+    /* Calendar month grid container additional fix */
+    [data-baseweb="calendar-month"] > div {
+        border: none !important;
+        background: #ffffff !important;
+    }
+    
+    /* Remove any table styling that might create borders */
+    [data-baseweb="calendar"] table {
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+    }
+    
+    /* Specific fix for bottom and top borders that might show as black */
+    [data-baseweb="calendar"]:before,
+    [data-baseweb="calendar"]:after {
+        display: none !important;
+    }
+    
+    /* ULTRA AGGRESSIVE CALENDAR BORDER FIXES - Nuclear Option */
+    
+    /* Target absolutely everything in the calendar hierarchy */
+    [data-baseweb*="calendar"] *,
+    [data-baseweb*="popover"] *,
+    [class*="calendar"] *,
+    [class*="Calendar"] *,
+    [class*="datepicker"] *,
+    [class*="DatePicker"] * {
+        border: none !important;
+        border-top: none !important;
+        border-bottom: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-width: 0 !important;
+        border-color: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Force white background on everything calendar-related */
+    [data-baseweb*="calendar"],
+    [data-baseweb*="calendar"] *,
+    [data-baseweb*="popover"],
+    [data-baseweb*="popover"] *,
+    [class*="calendar"],
+    [class*="calendar"] *,
+    div[role="dialog"] {
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+    }
+    
+    /* Additional BaseWeb selectors that might be causing issues */
+    [data-baseweb="base-input"],
+    [data-baseweb="datepicker"],
+    [data-baseweb="calendar-header"] *,
+    [data-baseweb="calendar-month"] *,
+    [data-baseweb="calendar-month"] table,
+    [data-baseweb="calendar-month"] tbody,
+    [data-baseweb="calendar-month"] thead {
+        border: none !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+    }
+    
+    /* Target any remaining table elements */
+    .stDateInput table,
+    .stDateInput table *,
+    .stDateInput thead,
+    .stDateInput tbody,
+    .stDateInput tr,
+    .stDateInput td,
+    .stDateInput th {
+        border: none !important;
+        border-collapse: collapse !important;
+        background: #ffffff !important;
+    }
+    
+    /* Final nuclear option - target by position */
+    .stDateInput > div > div > div,
+    .stDateInput > div > div > div *,
+    .stDateInput div[data-testid] *,
+    .stDateInput [role="dialog"] *,
+    .stDateInput [role="presentation"] * {
+        border: none !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+    }
+    
+    /* Ensure the main calendar container has only our desired border */
+    .stDateInput [data-baseweb="popover"],
+    .stDateInput [data-baseweb="popover"] > div {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+    }
+    
+    /* Remove any artifacts from layers */
+    .stDateInput [data-baseweb="popover"] > div > * {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* EMERGENCY CSS - Last resort universal fixes */
+    
+    /* Use CSS custom properties to override any deep inheritance */
+    .stDateInput {
+        --calendar-border: none !important;
+        --calendar-background: #ffffff !important;
+    }
+    
+    /* Target every possible element with universal selector */
+    .stDateInput *,
+    .stDateInput *:before,
+    .stDateInput *:after {
+        border-color: transparent !important;
+        border-style: none !important;
+        border-width: 0px !important;
+    }
+    
+    /* Specific targeting for potential layering issues */
+    .stDateInput > div,
+    .stDateInput > div > div,
+    .stDateInput > div > div > div,
+    .stDateInput > div > div > div > div,
+    .stDateInput > div > div > div > div > div {
+        border: none !important;
+        background: inherit !important;
+    }
+    
+    /* Force inheritance reset */
+    .stDateInput [data-baseweb="popover"] {
+        all: unset !important;
+        display: block !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        position: absolute !important;
+    }
+    
+    /* Alternative approach - hide any black artifacts */
+    .stDateInput [style*="border"],
+    .stDateInput [style*="background: black"],
+    .stDateInput [style*="background-color: black"],
+    .stDateInput [style*="border-color: black"] {
+        border: none !important;
+        background: #ffffff !important;
+        border-color: transparent !important;
+    }
+    
+    /* Force override any inline styles */
+    .stDateInput [data-baseweb="calendar"][style] {
+        border: none !important;
+        background: #ffffff !important;
+    }
+    
+    /* Target common CSS class patterns */
+    .stDateInput .css-*,
+    .stDateInput [class*="css-"],
+    .stDateInput [class*="emotion-"],
+    .stDateInput [data-emotion] {
+        border: none !important;
+        background: #ffffff !important;
+    }
+    
     /* Selectbox Enhancements */
     .stSelectbox > div > div {
         background: #ffffff !important;
@@ -349,16 +736,11 @@ st.markdown("""
         color: #92400e;
     }
     
-    /* Data Table Enhancements */
+    /* Data Table Enhancements - Minimal Styling (Compatible with Dark Theme) */
     .stDataFrame {
         border-radius: 8px;
         overflow: hidden;
         box-shadow: none;
-        border: 1px solid #e2e8f0;
-    }
-    
-    .stDataFrame > div {
-        background-color: #ffffff;
     }
     
     /* Chart Container */
@@ -455,10 +837,38 @@ st.markdown("""
         }
     }
     
-    /* Hide Streamlit Branding */
-    #MainMenu {visibility: hidden;}
+    /* Hide Streamlit Branding - BUT KEEP TOOLBAR */
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    /* Note: MainMenu and header are kept visible to show running/deploy buttons */
+    
+    /* Fix Streamlit Toolbar Background to Match Page */
+    .stApp > header[data-testid="stHeader"] {
+        background-color: #f8fafc !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+    
+    /* Style the toolbar buttons to match */
+    .stApp > header[data-testid="stHeader"] button {
+        background-color: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        color: #374151 !important;
+        border-radius: 6px !important;
+    }
+    
+    .stApp > header[data-testid="stHeader"] button:hover {
+        background-color: #f3f4f6 !important;
+        border-color: #9ca3af !important;
+    }
+    
+    /* Style the main menu icon */
+    .stApp > header[data-testid="stHeader"] [data-testid="stHeaderActionElements"] {
+        background-color: transparent !important;
+    }
+    
+    /* Ensure header text is visible */
+    .stApp > header[data-testid="stHeader"] * {
+        color: #374151 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -517,8 +927,198 @@ def create_progress_bar(percentage, label):
     </div>
     """
 
+def calculate_risk_severity_from_weather(weather_data, forecast_days_data=None):
+    """
+    Calculate 3-class risk severity from current weather conditions
+    Uses LSTM model if available and sufficient forecast data is provided,
+    otherwise falls back to rule-based assessment
+    
+    Args:
+        weather_data: Current weather conditions dictionary
+        forecast_days_data: Optional list of 7-day forecast data for LSTM prediction
+    
+    Returns: (risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score)
+    """
+    import numpy as np
+    
+    # Check if we have a trained LSTM model and sufficient forecast data
+    model_type = "Rule-based"
+    if ('trained_lstm_model' in st.session_state and 
+        forecast_days_data is not None and 
+        len(forecast_days_data) >= 7):
+        
+        # Try LSTM prediction first
+        lstm_result = predict_risk_with_lstm(forecast_days_data)
+        if lstm_result is not None:
+            risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence = lstm_result
+            model_type = "LSTM Neural Network"
+            # Convert confidence to risk_score equivalent (0-10 scale)
+            risk_score = (risk_level_int - 1) * 3.5 + (confidence * 2.5)
+            return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence
+    
+    # Fall back to rule-based calculation
+    # Initialize risk score
+    risk_score = 0.0
+    
+    # Precipitation scoring (highest weight - most critical factor)
+    if weather_data.get('precip', 0) > 25:
+        risk_score += 3.0
+    elif weather_data.get('precip', 0) > 10:
+        risk_score += 1.5
+    
+    # Humidity scoring (second most important)
+    if weather_data.get('humidity', 0) > 95:
+        risk_score += 2.5
+    elif weather_data.get('humidity', 0) > 85:
+        risk_score += 1.0
+    
+    # Pressure scoring (inverted - low pressure = higher risk)
+    pressure = weather_data.get('sealevelpressure', 1013)
+    if pressure < 1008:
+        risk_score += 2.0
+    elif pressure < 1012:
+        risk_score += 1.0
+    
+    # Wind speed scoring (moderate weight)
+    windspeed = weather_data.get('windspeed', 0)
+    if windspeed > 35:
+        risk_score += 1.5
+    elif windspeed > 30:
+        risk_score += 0.75
+    
+    # Additional factors for more nuanced scoring
+    
+    # Temperature consideration (extreme temps can indicate severe weather)
+    if 'tempmax' in weather_data and 'tempmin' in weather_data:
+        temp_range = weather_data['tempmax'] - weather_data['tempmin']
+        if temp_range > 20:
+            risk_score += 0.5
+    
+    # Cloud cover (heavy overcast can indicate severe weather systems)
+    if weather_data.get('cloudcover', 0) > 90:
+        risk_score += 0.5
+    
+    # Precipitation probability (even without actual precip, high probability is concerning)
+    precipprob = weather_data.get('precipprob', 0)
+    precip = weather_data.get('precip', 0)
+    if precipprob > 80 and precip > 5:
+        risk_score += 1.0
+    elif precipprob > 90:
+        risk_score += 0.5
+    
+    # Convert risk score to 3-class labels
+    if risk_score >= 6:
+        risk_level_int = 3
+        risk_level_name = "HIGH"
+        risk_class = "risk-high"
+        risk_icon = "🔴"
+        risk_color = "#dc2626"
+    elif risk_score >= 2.5:
+        risk_level_int = 2
+        risk_level_name = "MEDIUM"
+        risk_class = "risk-medium"
+        risk_icon = "🟡"
+        risk_color = "#d97706"
+    else:
+        risk_level_int = 1
+        risk_level_name = "LOW"
+        risk_class = "risk-low"
+        risk_icon = "🟢"
+        risk_color = "#16a34a"
+    
+    return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, None
+
+def predict_risk_with_lstm(weather_sequence_data):
+    """
+    Use trained LSTM model to predict risk severity from weather sequence
+    
+    Args:
+        weather_sequence_data: List of 7 weather dictionaries (7-day sequence)
+        
+    Returns:
+        (risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence)
+    """
+    try:
+        # Check if we have a trained model
+        if 'trained_lstm_model' not in st.session_state:
+            return None
+        
+        model = st.session_state['trained_lstm_model']
+        scaler = st.session_state['lstm_scaler']
+        feature_cols = st.session_state['lstm_feature_cols']
+        
+        # Extract features from sequence data
+        sequence_features = []
+        for day_data in weather_sequence_data:
+            day_features = []
+            for col in feature_cols:
+                day_features.append(day_data.get(col, 0))
+            sequence_features.append(day_features)
+        
+        # Convert to numpy array and scale
+        import numpy as np
+        sequence_array = np.array(sequence_features).reshape(1, len(weather_sequence_data), len(feature_cols))
+        sequence_scaled = scaler.transform(sequence_array.reshape(-1, len(feature_cols))).reshape(1, len(weather_sequence_data), len(feature_cols))
+        
+        # Import torch and make prediction
+        try:
+            import torch
+            model.eval()
+            with torch.no_grad():
+                sequence_tensor = torch.FloatTensor(sequence_scaled)
+                prediction = model(sequence_tensor)
+                
+                # Get probabilities (from log softmax)
+                probabilities = torch.exp(prediction).cpu().numpy()[0]
+                predicted_class = np.argmax(probabilities)
+                confidence = probabilities[predicted_class]
+                
+                # Convert to 1-indexed class (1=Low, 2=Medium, 3=High)
+                risk_level_int = predicted_class + 1
+                
+        except ImportError:
+            return None
+        
+        # Map to display values
+        risk_names = {1: "LOW", 2: "MEDIUM", 3: "HIGH"}
+        risk_classes = {1: "risk-low", 2: "risk-medium", 3: "risk-high"}
+        risk_icons = {1: "🟢", 2: "🟡", 3: "🔴"}
+        risk_colors = {1: "#16a34a", 2: "#d97706", 3: "#dc2626"}
+        
+        return (
+            risk_level_int,
+            risk_names[risk_level_int],
+            risk_classes[risk_level_int],
+            risk_icons[risk_level_int],
+            risk_colors[risk_level_int],
+            confidence
+        )
+        
+    except Exception as e:
+        # Fallback to rule-based if LSTM fails
+        return None
+
+def get_model_status():
+    """Get current model status and info"""
+    has_model = 'trained_lstm_model' in st.session_state and st.session_state['trained_lstm_model'] is not None
+    
+    if has_model:
+        return {
+            'has_model': True,
+            'accuracy': st.session_state.get('lstm_accuracy', 0.0),
+            'training_date': st.session_state.get('lstm_training_date', 'Unknown'),
+            'model_type': 'LSTM'
+        }
+    else:
+        return {
+            'has_model': False,
+            'accuracy': 0.0,
+            'training_date': 'Not trained',
+            'model_type': 'None'
+        }
+
 def prepare_lstm_data(df, sequence_length=7):
-    """Prepare data for LSTM model"""
+    """Prepare data for 3-class LSTM model"""
     feature_cols = ['tempmax', 'tempmin', 'temp', 'humidity', 'precip', 
                    'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover']
     
@@ -528,7 +1128,9 @@ def prepare_lstm_data(df, sequence_length=7):
     X, y = [], []
     for i in range(len(scaled_features) - sequence_length):
         X.append(scaled_features[i:i+sequence_length])
-        y.append(df.iloc[i+sequence_length]['flood_risk'])
+        # Convert risk_severity (1,2,3) to zero-indexed classes (0,1,2) for neural network
+        risk_level = df.iloc[i+sequence_length]['risk_severity'] - 1
+        y.append(risk_level)
     
     return np.array(X), np.array(y), scaler, feature_cols
 
@@ -631,37 +1233,37 @@ def main():
                 """, unsafe_allow_html=True)
             
             with col5:
-                # Calculate flood risk based on current conditions
-                risk_factors = {
-                    'High Precipitation': current.get('precip', 0) > 10,
-                    'High Humidity': current['humidity'] > 80,
-                    'Low Pressure': current.get('sealevelpressure', 1013) < 1010,
-                    'High Wind Speed': current['windspeed'] > 40
+                # Calculate advanced 3-class flood risk based on current conditions
+                # Prepare weather data from current conditions and today's forecast
+                current_weather = {
+                    'precip': current.get('precip', 0),
+                    'humidity': current.get('humidity', 0),
+                    'sealevelpressure': current.get('sealevelpressure', 1013),
+                    'windspeed': current.get('windspeed', 0),
+                    'tempmax': today_forecast.get('tempmax', current.get('temp', 20)),
+                    'tempmin': today_forecast.get('tempmin', current.get('temp', 20)),
+                    'cloudcover': current.get('cloudcover', 0),
+                    'precipprob': current.get('precipprob', 0)
                 }
                 
-                risk_score = sum(risk_factors.values()) / len(risk_factors)
+                # Use the sophisticated 3-class risk calculation
+                # Try to use forecast data if available for LSTM prediction
+                forecast_data = None
+                if weather_data and len(weather_data['days']) >= 7:
+                    forecast_data = weather_data['days'][:7]  # First 7 days for sequence
                 
-                if risk_score >= 0.75:
-                    risk_level = "HIGH"
-                    risk_class = "risk-high"
-                    risk_icon = "🔴"
-                    risk_color = "#dc2626"
-                elif risk_score >= 0.5:
-                    risk_level = "MEDIUM"
-                    risk_class = "risk-medium"
-                    risk_icon = "🟡"
-                    risk_color = "#d97706"
-                else:
-                    risk_level = "LOW"
-                    risk_class = "risk-low"
-                    risk_icon = "🟢"
-                    risk_color = "#16a34a"
+                result = calculate_risk_severity_from_weather(current_weather, forecast_data)
+                risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, lstm_confidence = result
+                
+                # Model status indicator
+                model_status = "🧠 LSTM" if model_type == "LSTM Neural Network" else "📊 Rule-based"
                 
                 st.markdown(f"""
                 <div class="weather-card" style="border-left: 4px solid {risk_color};">
-                    <h3>🌊 Flood Risk</h3>
-                    <h2 style="color: {risk_color};">{risk_icon} {risk_level}</h2>
-                    <p>Risk Score: {risk_score:.2f}</p>
+                    <h3>🌊 Flood Risk Severity</h3>
+                    <h2 style="color: {risk_color};">{risk_icon} {risk_level_name}</h2>
+                    <p>Risk Score: {risk_score:.2f}/10.0</p>
+                    <p style="font-size: 0.8rem; color: #64748b;">{model_status} • 3-class assessment</p>
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -805,14 +1407,48 @@ def main():
             <div class="metric-card">
                 <h3 style="color: #667eea; font-size: 1.5rem; margin-bottom: 1rem;">🧠 LSTM Neural Network</h3>
                 <p style="font-size: 1.1rem; color: #64748b; line-height: 1.6;">
-                    Advanced deep learning model using Long Short-Term Memory networks for sequential 
-                    flood prediction based on time-series weather patterns.
+                    Advanced deep learning model using Long Short-Term Memory networks for 3-class flood risk 
+                    prediction (Low, Medium, High) based on time-series weather patterns.
                 </p>
             </div>
             """, unsafe_allow_html=True)
             
-            col1, col2 = st.columns([3, 1])
-            with col2:
+            # Model Status Panel
+            model_status = get_model_status()
+            if model_status['has_model']:
+                st.markdown(f"""
+                <div class="alert-box alert-success">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>✅ LSTM Model Active</strong><br>
+                            <small style="color: #10b981;">
+                                Accuracy: {model_status['accuracy']:.1%} • 
+                                Trained: {model_status['training_date']}<br>
+                                Status: Ready for real-time predictions
+                            </small>
+                        </div>
+                        <div style="font-size: 2rem;">🧠</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div class="alert-box alert-info">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <strong>🔄 No LSTM Model Trained</strong><br>
+                            <small style="color: #3b82f6;">
+                                Train a model to enable AI-powered flood risk predictions
+                            </small>
+                        </div>
+                        <div style="font-size: 2rem;">📊</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Model Management Controls
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
                 if st.button("🚀 Train LSTM Model", use_container_width=True):
                     with st.spinner("Training advanced neural network..."):
                         progress_bar = st.progress(0)
@@ -823,10 +1459,17 @@ def main():
                         model, accuracy, X_test, y_test = train_lstm_model_safe(X, y)
                         
                         if model is not None:
+                            # Save trained model and metadata in session state
+                            st.session_state['trained_lstm_model'] = model
+                            st.session_state['lstm_scaler'] = scaler
+                            st.session_state['lstm_feature_cols'] = feature_cols
+                            st.session_state['lstm_accuracy'] = accuracy
+                            st.session_state['lstm_training_date'] = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
+                            st.session_state['model_status'] = 'LSTM'
                             st.markdown(f"""
                             <div class="alert-box alert-success">
                                 <strong>✅ Training Complete!</strong><br>
-                                LSTM model achieved {accuracy:.4f} accuracy on test data
+                                3-Class LSTM model achieved {accuracy:.4f} accuracy on test data
                             </div>
                             """, unsafe_allow_html=True)
                             
@@ -837,9 +1480,11 @@ def main():
                                 <div style="font-family: 'Courier New', monospace; background: #f1f5f9; padding: 1rem; border-radius: 8px; color: #1e293b;">
                                     <div style="color: #1e293b; margin: 0.5rem 0;">📊 <strong>Input Size:</strong> 9 weather features</div>
                                     <div style="color: #1e293b; margin: 0.5rem 0;">🧠 <strong>Hidden Layers:</strong> 2 LSTM layers (50 neurons each)</div>
-                                    <div style="color: #1e293b; margin: 0.5rem 0;">📈 <strong>Output:</strong> Binary flood classification</div>
+                                    <div style="color: #1e293b; margin: 0.5rem 0;">📈 <strong>Output:</strong> 3-class risk classification (Low/Medium/High)</div>
                                     <div style="color: #1e293b; margin: 0.5rem 0;">⏱️ <strong>Sequence Length:</strong> 7-day weather history</div>
                                     <div style="color: #1e293b; margin: 0.5rem 0;">🎯 <strong>Dropout:</strong> 20% for regularization</div>
+                                    <div style="color: #1e293b; margin: 0.5rem 0;">🔀 <strong>Activation:</strong> LogSoftmax for multi-class</div>
+                                    <div style="color: #1e293b; margin: 0.5rem 0;">📋 <strong>Loss Function:</strong> Negative Log Likelihood</div>
                                 </div>
                             </div>
                             """, unsafe_allow_html=True)
@@ -850,44 +1495,102 @@ def main():
                                 PyTorch may not be properly installed. Consider using alternative models.
                             </div>
                             """, unsafe_allow_html=True)
+            
+            # Model Management Buttons
+            with col2:
+                if model_status['has_model'] and st.button("🔄 Retrain", use_container_width=True):
+                    # Clear existing model and retrain
+                    for key in ['trained_lstm_model', 'lstm_scaler', 'lstm_feature_cols', 'lstm_accuracy', 'lstm_training_date', 'model_status']:
+                        if key in st.session_state:
+                            del st.session_state[key]
+                    st.rerun()
+            
+            with col3:
+                if model_status['has_model'] and st.button("🗑️ Reset", use_container_width=True):
+                    # Clear all model data
+                    for key in ['trained_lstm_model', 'lstm_scaler', 'lstm_feature_cols', 'lstm_accuracy', 'lstm_training_date', 'model_status']:
+                        if key in st.session_state:
+                            del st.session_state[key]
+                    st.success("Model cleared successfully!")
+                    st.rerun()
         
         elif model_type == "Logistic Regression":
             st.markdown("""
             <div class="metric-card">
-                <h3 style="color: #667eea; font-size: 1.5rem; margin-bottom: 1rem;">📈 Logistic Regression</h3>
+                <h3 style="color: #667eea; font-size: 1.5rem; margin-bottom: 1rem;">📈 Multinomial Logistic Regression</h3>
                 <p style="font-size: 1.1rem; color: #64748b; line-height: 1.6;">
-                    Statistical learning approach providing interpretable flood risk classification 
-                    with feature importance analysis.
+                    Statistical learning approach for 3-class risk prediction (Low/Medium/High) with 
+                    interpretable feature importance analysis.
                 </p>
             </div>
             """, unsafe_allow_html=True)
             
-            if st.button("📊 Train Logistic Regression", use_container_width=True):
-                with st.spinner("Training statistical model..."):
+            if st.button("📊 Train Multinomial Logistic Regression", use_container_width=True):
+                with st.spinner("Training 3-class statistical model..."):
                     feature_cols = ['tempmax', 'tempmin', 'temp', 'humidity', 'precip', 
                                    'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover']
                     
                     X = historical_df[feature_cols]
-                    y = historical_df['flood_risk']
+                    y = historical_df['risk_severity']  # Use 3-class labels
                     
-                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                                      random_state=42, stratify=y)
                     
                     scaler = StandardScaler()
                     X_train_scaled = scaler.fit_transform(X_train)
                     X_test_scaled = scaler.transform(X_test)
                     
-                    lr_model = LogisticRegression(random_state=42, max_iter=1000)
+                    # Use multinomial logistic regression for 3-class
+                    lr_model = LogisticRegression(random_state=42, max_iter=1000, 
+                                                multi_class='multinomial', solver='lbfgs')
                     lr_model.fit(X_train_scaled, y_train)
                     
                     y_pred = lr_model.predict(X_test_scaled)
                     accuracy = accuracy_score(y_test, y_pred)
                     
+                    # Get classification report
+                    class_names = ['Low Risk', 'Medium Risk', 'High Risk']
+                    class_report = classification_report(y_test, y_pred, 
+                                                       target_names=class_names, output_dict=True)
+                    
                     st.markdown(f"""
                     <div class="alert-box alert-success">
                         <strong>✅ Model Trained Successfully!</strong><br>
-                        Achieved {accuracy:.4f} accuracy with statistical learning
+                        3-Class Multinomial Model achieved {accuracy:.4f} accuracy
                     </div>
                     """, unsafe_allow_html=True)
+                    
+                    # Display per-class performance
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.markdown(f"""
+                        <div class="metric-card risk-low">
+                            <h4>🟢 Low Risk Performance</h4>
+                            <p><strong>Precision:</strong> {class_report['Low Risk']['precision']:.3f}</p>
+                            <p><strong>Recall:</strong> {class_report['Low Risk']['recall']:.3f}</p>
+                            <p><strong>F1-Score:</strong> {class_report['Low Risk']['f1-score']:.3f}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    with col2:
+                        st.markdown(f"""
+                        <div class="metric-card risk-medium">
+                            <h4>🟡 Medium Risk Performance</h4>
+                            <p><strong>Precision:</strong> {class_report['Medium Risk']['precision']:.3f}</p>
+                            <p><strong>Recall:</strong> {class_report['Medium Risk']['recall']:.3f}</p>
+                            <p><strong>F1-Score:</strong> {class_report['Medium Risk']['f1-score']:.3f}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    with col3:
+                        st.markdown(f"""
+                        <div class="metric-card risk-high">
+                            <h4>🔴 High Risk Performance</h4>
+                            <p><strong>Precision:</strong> {class_report['High Risk']['precision']:.3f}</p>
+                            <p><strong>Recall:</strong> {class_report['High Risk']['recall']:.3f}</p>
+                            <p><strong>F1-Score:</strong> {class_report['High Risk']['f1-score']:.3f}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                     
                     # Enhanced feature importance visualization
                     importance_df = pd.DataFrame({
@@ -924,8 +1627,8 @@ def main():
             <div class="metric-card">
                 <h3 style="color: #667eea; font-size: 1.5rem; margin-bottom: 1rem;">🎯 K-Means Clustering</h3>
                 <p style="font-size: 1.1rem; color: #64748b; line-height: 1.6;">
-                    Unsupervised learning to discover hidden weather patterns and group similar 
-                    atmospheric conditions for flood risk analysis.
+                    Unsupervised learning to discover hidden weather patterns and analyze how they 
+                    correlate with 3-class risk severity levels (Low/Medium/High).
                 </p>
             </div>
             """, unsafe_allow_html=True)
@@ -955,36 +1658,131 @@ def main():
                     historical_df_clustered = historical_df.copy()
                     historical_df_clustered['cluster'] = clusters
                     
+                    # Store results in session state to persist across reruns
+                    st.session_state['kmeans_results'] = historical_df_clustered
+                    st.session_state['n_clusters_used'] = n_clusters
+                    
+            # Check if we have stored results or just ran analysis
+            if analyze_button or 'kmeans_results' in st.session_state:
+                # Use either fresh results or stored results
+                if analyze_button:
+                    historical_df_clustered = st.session_state['kmeans_results']
+                    clusters_used = st.session_state['n_clusters_used']
+                else:
+                    historical_df_clustered = st.session_state['kmeans_results']
+                    clusters_used = st.session_state['n_clusters_used']
+                
+                if analyze_button:  # Only show success message when button was just clicked
                     st.markdown(f"""
                     <div class="alert-box alert-success">
                         <strong>✅ Pattern Analysis Complete!</strong><br>
-                        Discovered {n_clusters} distinct weather patterns in the data
+                        Discovered {clusters_used} distinct weather patterns in the data
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # Enhanced cluster statistics
+                    # Enhanced cluster statistics with 3-class risk analysis
                     cluster_stats = historical_df_clustered.groupby('cluster').agg({
-                        'flood_risk': ['count', 'sum', 'mean'],
+                        'risk_severity': ['count', 'mean'],
+                        'flood_risk': ['sum'],  # Count of high-risk days (backward compatibility)
                         'precip': 'mean',
                         'temp': 'mean',
                         'humidity': 'mean'
                     }).round(3)
                     
+                    # Add risk distribution per cluster
+                    risk_distribution = []
+                    for cluster_id in range(n_clusters):
+                        cluster_data = historical_df_clustered[historical_df_clustered['cluster'] == cluster_id]
+                        risk_counts = cluster_data['risk_severity'].value_counts().sort_index()
+                        total = len(cluster_data)
+                        
+                        low_pct = (risk_counts.get(1, 0) / total * 100) if total > 0 else 0
+                        med_pct = (risk_counts.get(2, 0) / total * 100) if total > 0 else 0
+                        high_pct = (risk_counts.get(3, 0) / total * 100) if total > 0 else 0
+                        
+                        risk_distribution.append({
+                            'cluster': cluster_id,
+                            'low_risk_pct': low_pct,
+                            'med_risk_pct': med_pct,
+                            'high_risk_pct': high_pct
+                        })
+                    
+                    risk_dist_df = pd.DataFrame(risk_distribution)
+                    
                     st.markdown('<div class="chart-container">', unsafe_allow_html=True)
-                    st.subheader("📊 Cluster Analysis Results")
+                    st.subheader("📊 Cluster Weather Statistics")
                     st.dataframe(cluster_stats, use_container_width=True)
                     st.markdown('</div>', unsafe_allow_html=True)
                     
-                    # Enhanced scatter plot with discrete colors for clusters
-                    # Convert cluster to categorical to ensure discrete colors
-                    historical_df_clustered['cluster_cat'] = historical_df_clustered['cluster'].astype(str)
-                    # Format date for better display in tooltip
-                    historical_df_clustered['date_formatted'] = historical_df_clustered['datetime'].dt.strftime('%Y-%m-%d')
+                    # Risk distribution per cluster
+                    st.markdown('<div class="chart-container">', unsafe_allow_html=True)
+                    st.subheader("🎯 Risk Distribution by Cluster")
                     
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.dataframe(risk_dist_df.set_index('cluster'), use_container_width=True)
+                    
+                    with col2:
+                        # Create a stacked bar chart for risk distribution
+                        fig_risk = go.Figure()
+                        
+                        fig_risk.add_trace(go.Bar(
+                            name='Low Risk',
+                            x=risk_dist_df['cluster'],
+                            y=risk_dist_df['low_risk_pct'],
+                            marker_color='#16a34a'
+                        ))
+                        
+                        fig_risk.add_trace(go.Bar(
+                            name='Medium Risk',
+                            x=risk_dist_df['cluster'],
+                            y=risk_dist_df['med_risk_pct'],
+                            marker_color='#d97706'
+                        ))
+                        
+                        fig_risk.add_trace(go.Bar(
+                            name='High Risk',
+                            x=risk_dist_df['cluster'],
+                            y=risk_dist_df['high_risk_pct'],
+                            marker_color='#dc2626'
+                        ))
+                        
+                        fig_risk.update_layout(
+                            title='Risk Level Distribution by Cluster',
+                            barmode='stack',
+                            xaxis_title='Cluster',
+                            yaxis_title='Percentage (%)',
+                            plot_bgcolor='#ffffff',
+                            paper_bgcolor='#ffffff',
+                            font=dict(family="Inter", size=12, color='#1e293b'),
+                            title_font_color='#1e293b',
+                            height=400
+                        )
+                        
+                        st.plotly_chart(fig_risk, use_container_width=True)
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Enhanced scatter plot with risk severity visualization - MOVED OUTSIDE CONDITIONAL
+                # Convert cluster to categorical to ensure discrete colors
+                historical_df_clustered['cluster_cat'] = historical_df_clustered['cluster'].astype(str)
+                # Format date for better display in tooltip
+                historical_df_clustered['date_formatted'] = historical_df_clustered['datetime'].dt.strftime('%Y-%m-%d')
+                # Map risk severity to readable labels
+                risk_labels = {1: 'Low Risk', 2: 'Medium Risk', 3: 'High Risk'}
+                historical_df_clustered['risk_label'] = historical_df_clustered['risk_severity'].map(risk_labels)
+                
+                # Create two visualization options - NOW OUTSIDE THE CONDITIONAL BLOCK
+                viz_option = st.radio("Visualization Mode:", 
+                                    ["Weather Clusters", "Risk Severity"], 
+                                    horizontal=True)
+                
+                if viz_option == "Weather Clusters":
                     fig = px.scatter(
                         historical_df_clustered, x='temp', y='precip', 
                         color='cluster_cat', size='humidity',
-                        hover_data={'date_formatted': True, 'humidity': ':.1f', 'windspeed': ':.1f', 'cluster_cat': False},
+                        hover_data={'date_formatted': True, 'humidity': ':.1f', 'windspeed': ':.1f', 
+                                   'cluster_cat': False, 'risk_label': True},
                         title='Weather Pattern Clusters',
                         labels={
                             'temp': 'Temperature (°C)', 
@@ -992,34 +1790,132 @@ def main():
                             'cluster_cat': 'Cluster',
                             'date_formatted': 'Date',
                             'humidity': 'Humidity (%)',
-                            'windspeed': 'Wind Speed (km/h)'
+                            'windspeed': 'Wind Speed (km/h)',
+                            'risk_label': 'Risk Level'
                         },
                         color_discrete_sequence=px.colors.qualitative.Set1
                     )
-                    fig.update_layout(
-                        plot_bgcolor='#ffffff',
-                        paper_bgcolor='#ffffff',
-                        font=dict(family="Inter", size=12, color='#1e293b'),
-                        height=600,
-                        title_font_color='#1e293b',
-                        legend=dict(
-                            title=dict(text="Cluster", font=dict(color='#1e293b', size=14)),
-                            font=dict(color='#1e293b', size=12),
-                            bgcolor='rgba(248, 250, 252, 0.95)',
-                            bordercolor='#1e293b',
-                            borderwidth=2,
-                            x=1.02,
-                            y=1,
-                            xanchor='left',
-                            yanchor='top'
-                        )
+                else:
+                    fig = px.scatter(
+                        historical_df_clustered, x='temp', y='precip', 
+                        color='risk_label', size='humidity',
+                        hover_data={'date_formatted': True, 'humidity': ':.1f', 'windspeed': ':.1f', 
+                                   'cluster_cat': True, 'risk_label': False},
+                        title='Risk Severity Distribution',
+                        labels={
+                            'temp': 'Temperature (°C)', 
+                            'precip': 'Precipitation (mm)', 
+                            'risk_label': 'Risk Level',
+                            'date_formatted': 'Date',
+                            'humidity': 'Humidity (%)',
+                            'windspeed': 'Wind Speed (km/h)',
+                            'cluster_cat': 'Cluster'
+                        },
+                        color_discrete_map={
+                            'Low Risk': '#16a34a',
+                            'Medium Risk': '#d97706', 
+                            'High Risk': '#dc2626'
+                        }
                     )
-                    fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
-                    fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
-                    st.plotly_chart(fig, use_container_width=True)
+                fig.update_layout(
+                    plot_bgcolor='#ffffff',
+                    paper_bgcolor='#ffffff',
+                    font=dict(family="Inter", size=12, color='#1e293b'),
+                    height=600,
+                    title_font_color='#1e293b',
+                    legend=dict(
+                        title=dict(text="Cluster", font=dict(color='#1e293b', size=14)),
+                        font=dict(color='#1e293b', size=12),
+                        bgcolor='rgba(248, 250, 252, 0.95)',
+                        bordercolor='#1e293b',
+                        borderwidth=2,
+                        x=1.02,
+                        y=1,
+                        xanchor='left',
+                        yanchor='top'
+                    )
+                )
+                fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
+                fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
+                st.plotly_chart(fig, use_container_width=True)
     
     elif main_section == "📊 Data Analysis":
         st.markdown('<h2 class="section-header">Historical Data Insights</h2>', unsafe_allow_html=True)
+        
+        # Date Range Filter Section
+        st.markdown("""
+        <div class="alert-box alert-info">
+            <strong>📅 Date Range Filter</strong><br>
+            Select a custom date range to focus your analysis on specific time periods
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Get min and max dates from the dataset
+        min_date = historical_df['datetime'].min().date()
+        max_date = historical_df['datetime'].max().date()
+        
+        # Initialize reset counter in session state
+        if 'date_reset_counter' not in st.session_state:
+            st.session_state.date_reset_counter = 0
+        
+        col1, col2, col3 = st.columns([2, 2, 1])
+        
+        with col1:
+            start_date = st.date_input(
+                "📅 Start Date",
+                value=min_date,
+                min_value=min_date,
+                max_value=max_date,
+                help="Select the start date for your analysis",
+                key=f"start_date_{st.session_state.date_reset_counter}"
+            )
+        
+        with col2:
+            end_date = st.date_input(
+                "📅 End Date", 
+                value=max_date,
+                min_value=min_date,
+                max_value=max_date,
+                help="Select the end date for your analysis",
+                key=f"end_date_{st.session_state.date_reset_counter}"
+            )
+        
+        with col3:
+            st.markdown('<br>', unsafe_allow_html=True)
+            if st.button("🔄 Reset Dates"):
+                # Increment counter to create new widget keys
+                st.session_state.date_reset_counter += 1
+                st.rerun()
+        
+        # Validate date range
+        if start_date > end_date:
+            st.error("⚠️ Start date must be before end date!")
+            st.stop()
+        
+        # Filter the historical data based on selected date range
+        mask = (historical_df['datetime'].dt.date >= start_date) & (historical_df['datetime'].dt.date <= end_date)
+        filtered_df = historical_df.loc[mask].copy()
+        
+        if len(filtered_df) == 0:
+            st.warning("⚠️ No data available for the selected date range. Please adjust your selection.")
+            st.stop()
+        
+        # Display filtered data summary
+        st.markdown(f"""
+        <div class="metric-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="color: #2563eb; margin: 0;">📊 Filtered Dataset Summary</h4>
+                    <p style="margin: 0.5rem 0; color: #64748b;">
+                        <strong>Date Range:</strong> {start_date.strftime('%b %d, %Y')} - {end_date.strftime('%b %d, %Y')}<br>
+                        <strong>Records:</strong> {len(filtered_df):,} out of {len(historical_df):,} total records<br>
+                        <strong>Coverage:</strong> {len(filtered_df)/len(historical_df)*100:.1f}% of total dataset
+                    </p>
+                </div>
+                <div style="font-size: 2rem;">📈</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         with st.sidebar:
             analysis_type = st.selectbox(
@@ -1031,48 +1927,56 @@ def main():
         if analysis_type == "Data Overview":
             st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">📋 Dataset Overview</h3>', unsafe_allow_html=True)
             
-            # Enhanced metrics with custom cards
+            # Enhanced metrics with custom cards (using filtered data)
             col1, col2, col3, col4 = st.columns(4)
             with col1:
                 st.markdown(create_custom_metric_card(
-                    "Total Records", f"{len(historical_df):,}", 
+                    "Total Records", f"{len(filtered_df):,}", 
                     "Weather observations", "📊"
                 ), unsafe_allow_html=True)
             
             with col2:
-                date_range = f"{historical_df['datetime'].dt.year.min()}-{historical_df['datetime'].dt.year.max()}"
+                if len(filtered_df) > 0:
+                    date_range = f"{filtered_df['datetime'].dt.year.min()}-{filtered_df['datetime'].dt.year.max()}"
+                else:
+                    date_range = "N/A"
                 st.markdown(create_custom_metric_card(
                     "Time Period", date_range, 
                     "Years of data", "📅"
                 ), unsafe_allow_html=True)
             
             with col3:
-                flood_events = historical_df['flood_risk'].sum()
+                high_risk_events = (filtered_df['risk_severity'] == 3).sum()
                 st.markdown(create_custom_metric_card(
-                    "Flood Events", str(flood_events), 
-                    "Recorded incidents", "🌊", "risk-high" if flood_events > 5 else "risk-medium"
+                    "High Risk Days", str(high_risk_events), 
+                    "Critical risk events", "🔴", "risk-high" if high_risk_events > 5 else "risk-medium"
                 ), unsafe_allow_html=True)
             
             with col4:
-                flood_rate = (historical_df['flood_risk'].mean() * 100)
+                # Calculate risk distribution
+                risk_dist = filtered_df['risk_severity'].value_counts(normalize=True).sort_index() * 100
+                high_risk_rate = risk_dist.get(3, 0)
                 st.markdown(create_custom_metric_card(
-                    "Flood Rate", f"{flood_rate:.2f}%", 
-                    "Of total days", "📈"
+                    "High Risk Rate", f"{high_risk_rate:.1f}%", 
+                    "Of filtered days", "📈"
                 ), unsafe_allow_html=True)
             
             st.markdown('<br><br>', unsafe_allow_html=True)
             
-            # Enhanced data preview
+            # Enhanced data preview (using filtered data)
             st.markdown("""
             <div class="alert-box alert-info">
                 <strong>📋 Data Sample</strong><br>
-                Preview of the historical weather dataset
+                Preview of the filtered weather dataset
             </div>
             """, unsafe_allow_html=True)
             
             # Create a display version with string datetime for Arrow compatibility
-            display_df = historical_df.head(10).copy()
-            display_df['datetime'] = display_df['datetime_str']
+            display_df = filtered_df.head(10).copy()
+            if 'datetime_str' in display_df.columns:
+                display_df['datetime'] = display_df['datetime_str']
+            else:
+                display_df['datetime'] = display_df['datetime'].dt.strftime('%Y-%m-%d')
             # Remove all datetime-related columns that could cause Arrow issues
             columns_to_drop = ['datetime_str', 'datetime_original'] 
             for col in columns_to_drop:
@@ -1080,87 +1984,126 @@ def main():
                     display_df = display_df.drop(col, axis=1)
             st.dataframe(display_df, use_container_width=True, hide_index=True)
             
-            # Statistical summary with enhanced styling
+            # Statistical summary with enhanced styling (using filtered data)
             st.markdown('<br>', unsafe_allow_html=True)
             st.markdown("""
             <div class="alert-box alert-info">
                 <strong>📊 Statistical Summary</strong><br>
-                Key statistics for numerical variables
+                Key statistics for filtered numerical variables
             </div>
             """, unsafe_allow_html=True)
             
             # Exclude datetime columns for statistical summary to avoid Arrow issues
-            numeric_df = historical_df.select_dtypes(include=['number'])
+            numeric_df = filtered_df.select_dtypes(include=['number'])
             st.dataframe(numeric_df.describe(), use_container_width=True)
         
         elif analysis_type == "Flood Events":
-            st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌊 Interactive Flood Events Analysis</h3>', unsafe_allow_html=True)
+            st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌊 Risk Severity Analysis</h3>', unsafe_allow_html=True)
             
-            # Find all flood events
-            flood_events = historical_df[historical_df['flood_risk'] == 1].copy()
+            # Analyze all risk severity levels
+            risk_summary = filtered_df['risk_severity'].value_counts().sort_index()
             
-            if len(flood_events) > 0:
+            # Show risk level distribution
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                low_count = risk_summary.get(1, 0)
+                low_pct = (low_count / len(filtered_df) * 100) if len(filtered_df) > 0 else 0
+                st.markdown(f"""
+                <div class="metric-card risk-low">
+                    <h4>🟢 Low Risk Days</h4>
+                    <h2>{low_count}</h2>
+                    <p>{low_pct:.1f}% of total days</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col2:
+                med_count = risk_summary.get(2, 0)
+                med_pct = (med_count / len(filtered_df) * 100) if len(filtered_df) > 0 else 0
+                st.markdown(f"""
+                <div class="metric-card risk-medium">
+                    <h4>🟡 Medium Risk Days</h4>
+                    <h2>{med_count}</h2>
+                    <p>{med_pct:.1f}% of total days</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col3:
+                high_count = risk_summary.get(3, 0)
+                high_pct = (high_count / len(filtered_df) * 100) if len(filtered_df) > 0 else 0
+                st.markdown(f"""
+                <div class="metric-card risk-high">
+                    <h4>🔴 High Risk Days</h4>
+                    <h2>{high_count}</h2>
+                    <p>{high_pct:.1f}% of total days</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Focus on high-risk events for detailed analysis
+            high_risk_events = filtered_df[filtered_df['risk_severity'] == 3].copy()
+            
+            if len(high_risk_events) > 0:
                 st.markdown(f"""
                 <div class="alert-box alert-info">
-                    <strong>📊 Flood Events Summary</strong><br>
-                    Found {len(flood_events)} flood events in the dataset
+                    <strong>🔴 High Risk Events Analysis</strong><br>
+                    Found {len(high_risk_events)} high-risk events in the filtered dataset
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Enhanced metrics for flood events
+                # Enhanced metrics for high-risk events
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
                     st.markdown(create_custom_metric_card(
-                        "Total Events", str(len(flood_events)), 
-                        "Recorded incidents", "🌊", "risk-high"
+                        "Total Events", str(len(high_risk_events)), 
+                        "High-risk days", "🔴", "risk-high"
                     ), unsafe_allow_html=True)
                 
                 with col2:
-                    avg_precip = flood_events['precip'].mean()
+                    avg_precip = high_risk_events['precip'].mean()
                     st.markdown(create_custom_metric_card(
                         "Avg Precipitation", f"{avg_precip:.1f}mm", 
-                        "During flood events", "🌧️"
+                        "During high-risk events", "🌧️"
                     ), unsafe_allow_html=True)
                 
                 with col3:
-                    avg_humidity = flood_events['humidity'].mean()
+                    avg_humidity = high_risk_events['humidity'].mean()
                     st.markdown(create_custom_metric_card(
                         "Avg Humidity", f"{avg_humidity:.1f}%", 
-                        "During flood events", "💧"
+                        "During high-risk events", "💧"
                     ), unsafe_allow_html=True)
                 
                 with col4:
-                    avg_temp = flood_events['temp'].mean()
+                    avg_temp = high_risk_events['temp'].mean()
                     st.markdown(create_custom_metric_card(
                         "Avg Temperature", f"{avg_temp:.1f}°C", 
-                        "During flood events", "🌡️"
+                        "During high-risk events", "🌡️"
                     ), unsafe_allow_html=True)
                 
                 st.markdown('<br><br>', unsafe_allow_html=True)
                 
-                # Interactive flood event selector
+                # Interactive high-risk event selector
                 st.markdown("""
                 <div class="alert-box alert-info">
-                    <strong>🔍 Select Flood Event</strong><br>
-                    Click on a specific flood event to see detailed conditions
+                    <strong>🔍 Select High-Risk Event</strong><br>
+                    Click on a specific high-risk event to see detailed conditions
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Create a selectbox for flood events
-                flood_dates = flood_events['datetime'].dt.strftime('%Y-%m-%d').tolist()
+                # Create a selectbox for high-risk events
+                high_risk_dates = high_risk_events['datetime'].dt.strftime('%Y-%m-%d').tolist()
                 selected_date = st.selectbox(
-                    "Choose a flood event date",
-                    flood_dates,
-                    format_func=lambda x: f"📅 Flood Event: {x}"
+                    "Choose a high-risk event date",
+                    high_risk_dates,
+                    format_func=lambda x: f"🔴 High-Risk Event: {x}"
                 )
                 
                 if selected_date:
-                    # Get the selected flood event
-                    selected_event = flood_events[flood_events['datetime'].dt.strftime('%Y-%m-%d') == selected_date].iloc[0]
+                    # Get the selected high-risk event
+                    selected_event = high_risk_events[high_risk_events['datetime'].dt.strftime('%Y-%m-%d') == selected_date].iloc[0]
                     
                     st.markdown(f"""
                     <div class="metric-card risk-high" style="margin: 2rem 0;">
-                        <h3 style="color: #dc2626; margin-bottom: 1rem;">🚨 Flood Event Details - {selected_date}</h3>
+                        <h3 style="color: #dc2626; margin-bottom: 1rem;">🔴 High-Risk Event Details - {selected_date}</h3>
+                        <p><strong>Risk Score:</strong> {selected_event['risk_score']:.2f}</p>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
                             <div><strong>Temperature:</strong> {selected_event['temp']:.1f}°C</div>
                             <div><strong>Max Temp:</strong> {selected_event['tempmax']:.1f}°C</div>
@@ -1212,18 +2155,19 @@ def main():
                 
                 st.markdown('<br>', unsafe_allow_html=True)
                 
-                # Detailed flood events table
+                # Detailed high-risk events table
                 st.markdown("""
                 <div class="alert-box alert-info">
-                    <strong>📋 All Flood Events Summary</strong><br>
-                    Complete list of recorded flood events
+                    <strong>📋 All High-Risk Events Summary</strong><br>
+                    Complete list of high-risk events with detailed conditions
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Prepare flood events for display
-                display_flood_df = flood_events.copy()
+                # Prepare high-risk events for display
+                display_flood_df = high_risk_events.copy()
                 display_flood_df['Date'] = display_flood_df['datetime'].dt.strftime('%Y-%m-%d')
-                display_columns = ['Date', 'temp', 'tempmax', 'tempmin', 'humidity', 'precip', 'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover']
+                display_flood_df['Risk_Score'] = display_flood_df['risk_score'].round(2)
+                display_columns = ['Date', 'Risk_Score', 'temp', 'tempmax', 'tempmin', 'humidity', 'precip', 'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover']
                 display_flood_df = display_flood_df[display_columns]
                 
                 st.dataframe(display_flood_df, use_container_width=True, hide_index=True)
@@ -1231,16 +2175,19 @@ def main():
             else:
                 st.markdown("""
                 <div class="alert-box alert-success">
-                    <strong>✅ No Flood Events Found</strong><br>
-                    The dataset contains no recorded flood events (flood_risk = 1)
+                    <strong>✅ No High-Risk Events Found</strong><br>
+                    The filtered dataset contains no high-risk events (risk_severity = 3)
                 </div>
                 """, unsafe_allow_html=True)
         
         elif analysis_type == "Temporal Patterns":
             st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">📅 Temporal Patterns Analysis</h3>', unsafe_allow_html=True)
             
-            # Monthly patterns analysis
-            monthly_stats = historical_df.groupby('month').agg({
+            # Monthly patterns analysis (using filtered data)
+            if 'month' not in filtered_df.columns:
+                filtered_df['month'] = filtered_df['datetime'].dt.month
+            
+            monthly_stats = filtered_df.groupby('month').agg({
                 'flood_risk': ['count', 'sum', 'mean'],
                 'precip': 'mean',
                 'temp': 'mean',
@@ -1286,9 +2233,12 @@ def main():
             
             st.plotly_chart(fig, use_container_width=True)
             
-            # Year-over-year analysis
+            # Year-over-year analysis (using filtered data)
             st.markdown('<br>', unsafe_allow_html=True)
-            yearly_stats = historical_df.groupby('year').agg({
+            if 'year' not in filtered_df.columns:
+                filtered_df['year'] = filtered_df['datetime'].dt.year
+                
+            yearly_stats = filtered_df.groupby('year').agg({
                 'flood_risk': 'sum',
                 'precip': 'mean',
                 'temp': 'mean'
@@ -1317,10 +2267,10 @@ def main():
         elif analysis_type == "Weather Correlations":
             st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌤️ Weather Variable Correlations</h3>', unsafe_allow_html=True)
             
-            # Select numeric columns for correlation
+            # Select numeric columns for correlation (using filtered data)
             numeric_cols = ['tempmax', 'tempmin', 'temp', 'humidity', 'precip', 
                            'precipprob', 'windspeed', 'sealevelpressure', 'cloudcover', 'flood_risk']
-            correlation_df = historical_df[numeric_cols]
+            correlation_df = filtered_df[numeric_cols]
             
             # Calculate correlation matrix
             corr_matrix = correlation_df.corr()
@@ -1370,7 +2320,7 @@ def main():
             with col2:
                 # Scatter plot of highest correlation
                 highest_corr_var = flood_corr.index[0]
-                fig3 = px.scatter(historical_df, x=highest_corr_var, y='flood_risk',
+                fig3 = px.scatter(filtered_df, x=highest_corr_var, y='flood_risk',
                                  title=f'Flood Risk vs {highest_corr_var.replace("_", " ").title()}',
                                  opacity=0.6)
                 fig3.update_layout(
@@ -1387,8 +2337,8 @@ def main():
         elif analysis_type == "Flood Risk Analysis":
             st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">🌊 Comprehensive Flood Risk Analysis</h3>', unsafe_allow_html=True)
             
-            # Risk distribution analysis
-            risk_by_conditions = historical_df.copy()
+            # Risk distribution analysis (using filtered data)
+            risk_by_conditions = filtered_df.copy()
             risk_by_conditions['precip_category'] = pd.cut(risk_by_conditions['precip'], 
                                                           bins=[0, 5, 15, 25, float('inf')], 
                                                           labels=['Light', 'Moderate', 'Heavy', 'Extreme'])
@@ -1443,8 +2393,8 @@ def main():
             </div>
             """, unsafe_allow_html=True)
             
-            flood_days = historical_df[historical_df['flood_risk'] == 1]
-            non_flood_days = historical_df[historical_df['flood_risk'] == 0]
+            flood_days = filtered_df[filtered_df['flood_risk'] == 1]
+            non_flood_days = filtered_df[filtered_df['flood_risk'] == 0]
             
             comparison_data = {
                 'Metric': ['Avg Precipitation (mm)', 'Avg Humidity (%)', 'Avg Pressure (hPa)', 'Avg Wind Speed (km/h)'],
@@ -1481,70 +2431,200 @@ def main():
         if insight_type == "Risk Assessment":
             if weather_data:
                 current = weather_data['currentConditions']
+                today_forecast = weather_data['days'][0]
                 
-                # Enhanced risk calculation (updated thresholds based on 3 flood events)
-                risk_factors = {
-                    'High Precipitation': current.get('precip', 0) > 25.0,  # Min flood: 26.2mm
-                    'High Humidity': current['humidity'] > 95.0,  # Min flood: 95.2%
-                    'Low Pressure': current.get('pressure', 1013) < 1008.0,  # Max flood: 1007.2 hPa
-                    'High Wind Speed': current['windspeed'] > 35  # Based on flood event analysis
+                # Prepare comprehensive weather data for assessment
+                current_weather = {
+                    'precip': current.get('precip', 0),
+                    'humidity': current.get('humidity', 0),
+                    'sealevelpressure': current.get('sealevelpressure', 1013),
+                    'windspeed': current.get('windspeed', 0),
+                    'tempmax': today_forecast.get('tempmax', current.get('temp', 20)),
+                    'tempmin': today_forecast.get('tempmin', current.get('temp', 20)),
+                    'cloudcover': current.get('cloudcover', 0),
+                    'precipprob': current.get('precipprob', 0)
                 }
                 
-                risk_score = sum(risk_factors.values()) / len(risk_factors)
+                # Use the advanced 3-class risk calculation
+                # Try to use forecast data if available for LSTM prediction
+                forecast_data = None
+                if len(weather_data['days']) >= 7:
+                    forecast_data = weather_data['days'][:7]  # First 7 days for sequence
                 
-                if risk_score >= 0.75:
-                    risk_level = "HIGH"
-                    risk_class = "risk-high"
-                    risk_icon = "🔴"
-                elif risk_score >= 0.5:
-                    risk_level = "MEDIUM"
-                    risk_class = "risk-medium"
-                    risk_icon = "🟡"
-                else:
-                    risk_level = "LOW"
-                    risk_class = "risk-low"
-                    risk_icon = "🟢"
+                result = calculate_risk_severity_from_weather(current_weather, forecast_data)
+                risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, lstm_confidence = result
                 
-                # Enhanced risk display
+                # Model status indicator
+                model_indicator = "🧠 LSTM Neural Network" if model_type == "LSTM Neural Network" else "📊 Rule-based Assessment"
+                
+                # Enhanced risk display with 3-class system
                 st.markdown(f"""
                 <div class="metric-card {risk_class}" style="text-align: center; padding: 2rem;">
                     <div style="font-size: 4rem; margin-bottom: 1rem;">{risk_icon}</div>
                     <h1 style="font-size: 2.5rem; margin: 1rem 0; color: #1e293b;">
-                        {risk_level} RISK
+                        {risk_level_name} RISK
                     </h1>
+                    <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 1rem;">
+                        Risk Level {risk_level_int} of 3 • {model_indicator}
+                    </p>
                     <div class="progress-bar" style="max-width: 300px; margin: 2rem auto;">
-                        <div class="progress-fill" style="width: {risk_score*100}%;"></div>
+                        <div class="progress-fill" style="width: {min(risk_score/10*100, 100)}%;"></div>
                     </div>
                     <p style="font-size: 1.2rem; color: #64748b;">
-                        Risk Score: {risk_score:.2f}/1.00
+                        Risk Score: {risk_score:.2f}/10.0
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
                 
                 st.markdown('<br>', unsafe_allow_html=True)
                 
-                # Risk factors analysis
-                st.markdown("""
+                # Detailed Risk factors breakdown
+                st.markdown(f"""
                 <div class="alert-box alert-info">
-                    <strong>🔍 Risk Factors Analysis</strong><br>
-                    Current atmospheric conditions assessment
+                    <strong>🔍 Detailed Risk Factor Analysis</strong><br>
+                    {model_indicator} breakdown of weather conditions contributing to risk score
                 </div>
                 """, unsafe_allow_html=True)
                 
-                for factor, present in risk_factors.items():
-                    status_icon = "🔴" if present else "🟢"
-                    status_text = "PRESENT" if present else "NOT PRESENT"
-                    status_color = "#dc2626" if present else "#16a34a"
-                    
+                if model_type == "LSTM Neural Network":
+                    # LSTM Model Analysis - Show what the neural network is considering
                     st.markdown(f"""
-                    <div style="display: flex; align-items: center; padding: 1rem; margin: 0.5rem 0; 
-                         background: rgba(255,255,255,0.8); border-radius: 10px; 
-                         border-left: 4px solid {status_color};">
-                        <span style="font-size: 1.5rem; margin-right: 1rem;">{status_icon}</span>
-                        <div>
-                            <strong style="color: #1e293b;">{factor}</strong><br>
-                            <span style="color: {status_color}; font-weight: 600;">{status_text}</span>
+                    <div class="metric-card" style="background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);">
+                        <h4 style="color: #0277bd; margin-bottom: 1rem;">🧠 Neural Network Analysis</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <strong style="color: #1e293b;">Input Features:</strong><br>
+                                <small style="color: #64748b;">7-day weather sequence with 9 features per day</small>
+                            </div>
+                            <div>
+                                <strong style="color: #1e293b;">Model Confidence:</strong><br>
+                                <span style="color: #0277bd; font-weight: 600;">{lstm_confidence*100:.1f}% confident</span>
+                            </div>
                         </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #0277bd;">
+                            <div style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
+                                <strong>Key Weather Pattern Factors Analyzed:</strong><br>
+                                • Temperature trends (min/max/current): {current_weather.get('tempmin', 'N/A')}°C - {current_weather.get('tempmax', 'N/A')}°C<br>
+                                • Precipitation sequence: {current_weather.get('precip', 0):.1f}mm today<br>
+                                • Atmospheric pressure: {current_weather.get('sealevelpressure', 1013):.1f}hPa<br>
+                                • Humidity & wind patterns: {current_weather.get('humidity', 0):.1f}%, {current_weather.get('windspeed', 0):.1f}km/h<br>
+                                • Cloud cover progression: {current_weather.get('cloudcover', 0):.1f}%
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748b; font-style: italic;">
+                            The LSTM model analyzes complex temporal patterns in weather data that are difficult to capture with simple thresholds.
+                            Risk score of {risk_score:.2f}/10.0 reflects learned patterns from {len(historical_df) if 'historical_df' in locals() else 'historical'} weather records.
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    # Rule-based Analysis - Show the traditional factor breakdown
+                    st.markdown("### Rule-based Factor Contributions")
+                    
+                    # Calculate individual factor contributions
+                    factor_scores = []
+                
+                    # Precipitation analysis
+                    precip = current_weather.get('precip', 0)
+                    if precip > 25:
+                        precip_score = 3.0
+                        precip_status = f"🔴 CRITICAL: {precip:.1f}mm (>25mm threshold)"
+                        precip_color = "#dc2626"
+                    elif precip > 10:
+                        precip_score = 1.5
+                        precip_status = f"🟡 ELEVATED: {precip:.1f}mm (>10mm threshold)"
+                        precip_color = "#d97706"
+                    else:
+                        precip_score = 0.0
+                        precip_status = f"🟢 NORMAL: {precip:.1f}mm"
+                        precip_color = "#16a34a"
+                    
+                    factor_scores.append(("💧 Precipitation", precip_status, precip_score, precip_color))
+                
+                    # Humidity analysis
+                    humidity = current_weather.get('humidity', 0)
+                    if humidity > 95:
+                        humidity_score = 2.5
+                        humidity_status = f"🔴 CRITICAL: {humidity:.1f}% (>95% threshold)"
+                        humidity_color = "#dc2626"
+                    elif humidity > 85:
+                        humidity_score = 1.0
+                        humidity_status = f"🟡 ELEVATED: {humidity:.1f}% (>85% threshold)"
+                        humidity_color = "#d97706"
+                    else:
+                        humidity_score = 0.0
+                        humidity_status = f"🟢 NORMAL: {humidity:.1f}%"
+                        humidity_color = "#16a34a"
+                    
+                    factor_scores.append(("💨 Humidity", humidity_status, humidity_score, humidity_color))
+                
+                    # Pressure analysis
+                    pressure = current_weather.get('sealevelpressure', 1013)
+                    if pressure < 1008:
+                        pressure_score = 2.0
+                        pressure_status = f"🔴 CRITICAL: {pressure:.1f}hPa (<1008hPa threshold)"
+                        pressure_color = "#dc2626"
+                    elif pressure < 1012:
+                        pressure_score = 1.0
+                        pressure_status = f"🟡 ELEVATED: {pressure:.1f}hPa (<1012hPa threshold)"
+                        pressure_color = "#d97706"
+                    else:
+                        pressure_score = 0.0
+                        pressure_status = f"🟢 NORMAL: {pressure:.1f}hPa"
+                        pressure_color = "#16a34a"
+                    
+                    factor_scores.append(("🌊 Pressure", pressure_status, pressure_score, pressure_color))
+                
+                    # Wind analysis
+                    windspeed = current_weather.get('windspeed', 0)
+                    if windspeed > 35:
+                        wind_score = 1.5
+                        wind_status = f"🔴 HIGH: {windspeed:.1f}km/h (>35km/h threshold)"
+                        wind_color = "#dc2626"
+                    elif windspeed > 30:
+                        wind_score = 0.75
+                        wind_status = f"🟡 ELEVATED: {windspeed:.1f}km/h (>30km/h threshold)"
+                        wind_color = "#d97706"
+                    else:
+                        wind_score = 0.0
+                        wind_status = f"🟢 NORMAL: {windspeed:.1f}km/h"
+                        wind_color = "#16a34a"
+                    
+                    factor_scores.append(("🌪️ Wind Speed", wind_status, wind_score, wind_color))
+                
+                    # Display factor breakdown
+                    for factor_name, factor_status, score, color in factor_scores:
+                        st.markdown(f"""
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; margin: 0.5rem 0; 
+                             background: rgba(255,255,255,0.9); border-radius: 10px; 
+                             border-left: 4px solid {color}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <div>
+                                <strong style="color: #1e293b; font-size: 1.1rem;">{factor_name}</strong><br>
+                                <span style="color: {color}; font-weight: 600; font-size: 0.95rem;">{factor_status}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 1.2rem; font-weight: bold; color: {color};">+{score:.1f}</span><br>
+                                <span style="font-size: 0.8rem; color: #64748b;">points</span>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                
+                    # Show total calculation
+                    st.markdown(f"""
+                    <div class="metric-card" style="margin-top: 1rem; text-align: center;">
+                        <h4 style="color: #2563eb; margin-bottom: 1rem;">📊 Risk Score Calculation</h4>
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
+                            <span style="font-size: 1.5rem; font-weight: bold; color: {risk_color};">
+                                Total Score: {risk_score:.2f}/10.0
+                            </span>
+                            <span style="font-size: 1rem; color: #64748b;">→</span>
+                            <span style="font-size: 1.3rem; font-weight: bold; color: {risk_color};">
+                                {risk_icon} {risk_level_name} RISK
+                            </span>
+                        </div>
+                        <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.9rem;">
+                            Thresholds: Low (<2.5) • Medium (2.5-5.9) • High (≥6.0)
+                        </p>
                     </div>
                     """, unsafe_allow_html=True)
         
