@@ -13,12 +13,25 @@ from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import warnings
+import folium
+from streamlit_folium import st_folium
 warnings.filterwarnings('ignore')
 
 # Configuration
 API_KEY = "2M3N82RD42E4CWHEKB53PWSVW"
-LOCATION = "Maribyrnong"
-API_URL = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{LOCATION}?unitGroup=metric&key={API_KEY}&contentType=json"
+
+# Maribyrnong City Council Suburbs with coordinates
+MARIBYRNONG_SUBURBS = {
+    "Braybrook": {"lat": -37.7894, "lon": 144.8626, "display": "Braybrook"},
+    "Footscray": {"lat": -37.7986, "lon": 144.9008, "display": "Footscray"},
+    "Kingsville": {"lat": -37.8120, "lon": 144.8890, "display": "Kingsville"},
+    "Maidstone": {"lat": -37.7830, "lon": 144.8720, "display": "Maidstone"},
+    "Maribyrnong": {"lat": -37.7749, "lon": 144.8941, "display": "Maribyrnong"},
+    "Seddon": {"lat": -37.8020, "lon": 144.8950, "display": "Seddon"},
+    "Tottenham": {"lat": -37.7980, "lon": 144.8620, "display": "Tottenham"},
+    "West Footscray": {"lat": -37.7970, "lon": 144.8840, "display": "West Footscray"},
+    "Yarraville": {"lat": -37.8136, "lon": 144.9110, "display": "Yarraville"}
+}
 
 # Page configuration
 st.set_page_config(
@@ -32,6 +45,27 @@ st.set_page_config(
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Force Light Theme */
+    [data-testid="stAppViewContainer"] {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+    }
+    
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e2e8f0 !important;
+    }
+    
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+    
+    /* Override any dark theme styles */
+    .stApp, .stApp > div, .stApp .main {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+    }
     
     /* Global Styles */
     .stApp {
@@ -872,11 +906,63 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Force light theme with JavaScript
+st.markdown("""
+<script>
+    // Force light theme on page load
+    function forceTheme() {
+        const body = document.body;
+        const app = document.querySelector('[data-testid="stAppViewContainer"]');
+        const sidebar = document.querySelector('[data-testid="stSidebar"]');
+        
+        // Remove dark theme classes
+        if (body) {
+            body.classList.remove('dark-theme');
+            body.classList.add('light-theme');
+        }
+        
+        // Set CSS variables for light theme
+        if (app) {
+            app.style.setProperty('--background-color', '#f8fafc', 'important');
+            app.style.setProperty('--text-color', '#1e293b', 'important');
+            app.style.setProperty('--primary-color', '#ffffff', 'important');
+        }
+        
+        // Override Streamlit's theme setting in localStorage
+        try {
+            localStorage.setItem('streamlit-theme', 'light');
+            sessionStorage.setItem('streamlit-theme', 'light');
+        } catch (e) {
+            console.log('Could not set theme in storage:', e);
+        }
+    }
+    
+    // Run on page load and periodically
+    forceTheme();
+    setTimeout(forceTheme, 100);
+    setTimeout(forceTheme, 500);
+    setTimeout(forceTheme, 1000);
+    
+    // Monitor for theme changes and override them
+    const observer = new MutationObserver(forceTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+</script>
+""", unsafe_allow_html=True)
+
 @st.cache_data(ttl=300)
-def fetch_weather_data():
-    """Fetch current weather data from Visual Crossing API"""
+def fetch_weather_data(location="Maribyrnong"):
+    """Fetch current weather data from Visual Crossing API for specified location"""
     try:
-        response = requests.get(API_URL)
+        # Use coordinates if location is in our suburbs dictionary
+        if location in MARIBYRNONG_SUBURBS:
+            lat = MARIBYRNONG_SUBURBS[location]["lat"]
+            lon = MARIBYRNONG_SUBURBS[location]["lon"]
+            api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{lat},{lon}?unitGroup=metric&key={API_KEY}&contentType=json"
+        else:
+            # Fallback to location name
+            api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{location}?unitGroup=metric&key={API_KEY}&contentType=json"
+        
+        response = requests.get(api_url)
         if response.status_code == 200:
             return response.json()
         else:
@@ -1144,6 +1230,223 @@ def train_lstm_model_safe(X, y):
     except Exception as e:
         return None, 0.0, None, None
 
+def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
+    """Create an interactive map of the Maribyrnong River system with weather overlays"""
+    # Get coordinates for selected suburb
+    if selected_suburb in MARIBYRNONG_SUBURBS:
+        center_lat = MARIBYRNONG_SUBURBS[selected_suburb]["lat"]
+        center_lon = MARIBYRNONG_SUBURBS[selected_suburb]["lon"]
+    else:
+        # Default to Maribyrnong if suburb not found
+        center_lat, center_lon = -37.7749, 144.8941
+    
+    # Create base map with OpenStreetMap only
+    m = folium.Map(
+        location=[center_lat, center_lon],
+        zoom_start=13,
+        tiles='OpenStreetMap',
+        control_scale=True
+    )
+    
+    # All Maribyrnong City Council suburbs
+    key_locations = []
+    for suburb_key, suburb_data in MARIBYRNONG_SUBURBS.items():
+        location = {
+            "name": suburb_data["display"],
+            "lat": suburb_data["lat"],
+            "lon": suburb_data["lon"],
+            "type": "selected" if suburb_key == selected_suburb else "suburb"
+        }
+        key_locations.append(location)
+    
+    # Add Maribyrnong River Mouth as additional reference point
+    key_locations.append({
+        "name": "Maribyrnong River Mouth", 
+        "lat": -37.8136, 
+        "lon": 144.9110, 
+        "type": "river_mouth"
+    })
+    
+    # Define flood risk zones covering all 9 Maribyrnong suburbs
+    flood_risk_zones = [
+        # High Risk Zones - Close to river mouth and main waterways
+        {
+            "name": "High Risk Zone - Yarraville/River Mouth",
+            "coordinates": [[-37.8200, 144.9050], [-37.8200, 144.9200], [-37.8070, 144.9200], [-37.8070, 144.9050]],
+            "risk": "high",
+            "description": "Critical flood zone near Maribyrnong River mouth and Yarra junction"
+        },
+        {
+            "name": "High Risk Zone - Footscray Central",
+            "coordinates": [[-37.8050, 144.8950], [-37.8050, 144.9070], [-37.7920, 144.9070], [-37.7920, 144.8950]],
+            "risk": "high",
+            "description": "High flood risk along main river channel through Footscray"
+        },
+        
+        # Medium Risk Zones - Adjacent to waterways and urban areas
+        {
+            "name": "Medium Risk Zone - West Footscray",
+            "coordinates": [[-37.8070, 144.8800], [-37.8070, 144.8920], [-37.7870, 144.8920], [-37.7870, 144.8800]],
+            "risk": "medium",
+            "description": "Moderate flood risk in West Footscray residential areas"
+        },
+        {
+            "name": "Medium Risk Zone - Seddon",
+            "coordinates": [[-37.8120, 144.8900], [-37.8120, 144.9020], [-37.7920, 144.9020], [-37.7920, 144.8900]],
+            "risk": "medium",
+            "description": "Medium flood risk in Seddon along Maribyrnong River"
+        },
+        {
+            "name": "Medium Risk Zone - Maribyrnong Central",
+            "coordinates": [[-37.7850, 144.8850], [-37.7850, 144.9050], [-37.7650, 144.9050], [-37.7650, 144.8850]],
+            "risk": "medium",
+            "description": "Moderate flood risk in central Maribyrnong suburb"
+        },
+        {
+            "name": "Low Risk Zone - Braybrook",
+            "coordinates": [[-37.7970, 144.8550], [-37.7970, 144.8700], [-37.7820, 144.8700], [-37.7820, 144.8550]],
+            "risk": "low",
+            "description": "Low flood risk in Braybrook residential area"
+        },
+        
+        # Low Risk Zones - Further from main waterways
+        {
+            "name": "Low Risk Zone - Kingsville",
+            "coordinates": [[-37.8200, 144.8820], [-37.8200, 144.8960], [-37.8040, 144.8960], [-37.8040, 144.8820]],
+            "risk": "low",
+            "description": "Lower flood risk in Kingsville residential area"
+        },
+        {
+            "name": "Low Risk Zone - Maidstone",
+            "coordinates": [[-37.7930, 144.8650], [-37.7930, 144.8790], [-37.7730, 144.8790], [-37.7730, 144.8650]],
+            "risk": "low",
+            "description": "Low flood risk in Maidstone suburb"
+        },
+        {
+            "name": "Low Risk Zone - Tottenham",
+            "coordinates": [[-37.8080, 144.8550], [-37.8080, 144.8690], [-37.7880, 144.8690], [-37.7880, 144.8550]],
+            "risk": "low",
+            "description": "Lower flood risk in Tottenham industrial/residential area"
+        }
+    ]
+    
+    # Add flood risk zones
+    risk_colors = {"high": "#FF4444", "medium": "#FFA500", "low": "#FFFF00"}
+    risk_opacity = {"high": 0.6, "medium": 0.4, "low": 0.3}
+    
+    for zone in flood_risk_zones:
+        folium.Polygon(
+            locations=zone["coordinates"],
+            color=risk_colors[zone["risk"]],
+            fillColor=risk_colors[zone["risk"]],
+            fillOpacity=risk_opacity[zone["risk"]],
+            weight=2,
+            popup=folium.Popup(f"""
+                <div style="font-family: Inter, sans-serif; max-width: 200px;">
+                    <h4 style="color: {risk_colors[zone['risk']]}; margin: 5px 0;">
+                        🌊 {zone['name']}
+                    </h4>
+                    <p style="margin: 5px 0;"><strong>Risk Level:</strong> {zone['risk'].title()}</p>
+                    <p style="margin: 5px 0; font-size: 12px;">{zone['description']}</p>
+                </div>
+            """, max_width=250),
+            tooltip=f"{zone['name']} - {zone['risk'].title()} Risk"
+        ).add_to(m)
+    
+    # Add key locations with custom markers
+    location_icons = {
+        "selected": {"icon": "star", "color": "purple"},  # Currently selected suburb
+        "suburb": {"icon": "home", "color": "blue"},      # Other Maribyrnong suburbs
+        "river_mouth": {"icon": "tint", "color": "darkblue"}
+    }
+    
+    for location in key_locations:
+        icon_config = location_icons.get(location["type"], {"icon": "info-sign", "color": "gray"})
+        
+        # Enhanced popup content based on location type
+        if location["type"] == "selected":
+            status_text = "🌟 Currently Selected"
+            type_text = "Maribyrnong City Council Suburb"
+        elif location["type"] == "suburb":
+            status_text = "🏘️ Maribyrnong City Council Suburb"
+            type_text = "Maribyrnong City Council Area"
+        elif location["type"] == "river_mouth":
+            status_text = "🌊 Reference Point"
+            type_text = "Maribyrnong River Mouth"
+        else:
+            status_text = location["type"].replace('_', ' ').title()
+            type_text = "Location"
+        
+        popup_content = f"""
+        <div style="font-family: Inter, sans-serif; max-width: 250px;">
+            <h4 style="color: #1e293b; margin: 5px 0; font-size: 16px;">📍 {location['name']}</h4>
+            <p style="margin: 5px 0; font-weight: 600; color: #667eea;">{status_text}</p>
+            <p style="margin: 5px 0; color: #64748b;"><strong>Area:</strong> {type_text}</p>
+            <p style="margin: 5px 0; color: #64748b; font-size: 12px;"><strong>Coordinates:</strong><br>{location['lat']:.4f}, {location['lon']:.4f}</p>
+        </div>
+        """
+        
+        folium.Marker(
+            location=[location["lat"], location["lon"]],
+            popup=folium.Popup(popup_content, max_width=280),
+            tooltip=f"{location['name']} - {status_text}",
+            icon=folium.Icon(
+                color=icon_config["color"],
+                icon=icon_config["icon"],
+                prefix='fa'
+            )
+        ).add_to(m)
+    
+    # Add weather information if available
+    if weather_data and 'currentConditions' in weather_data:
+        current = weather_data['currentConditions']
+        
+        # Add weather marker at main location
+        weather_popup = f"""
+        <div style="font-family: Inter, sans-serif; max-width: 250px;">
+            <h4 style="color: #1e293b; margin: 5px 0;">🌡️ Current Weather</h4>
+            <div style="margin: 10px 0;">
+                <p style="margin: 3px 0;"><strong>Temperature:</strong> {current.get('temp', 'N/A')}°C</p>
+                <p style="margin: 3px 0;"><strong>Humidity:</strong> {current.get('humidity', 'N/A')}%</p>
+                <p style="margin: 3px 0;"><strong>Conditions:</strong> {current.get('conditions', 'N/A')}</p>
+                <p style="margin: 3px 0;"><strong>Wind:</strong> {current.get('windspeed', 'N/A')} km/h</p>
+                <p style="margin: 3px 0;"><strong>Precipitation:</strong> {current.get('precip', 0)} mm</p>
+            </div>
+        </div>
+        """
+        
+        folium.Marker(
+            location=[center_lat, center_lon],
+            popup=folium.Popup(weather_popup, max_width=300),
+            tooltip="Current Weather Conditions",
+            icon=folium.Icon(
+                color='orange',
+                icon='cloud',
+                prefix='fa'
+            )
+        ).add_to(m)
+    
+    
+    # Add layer control
+    folium.LayerControl().add_to(m)
+    
+    # Add legend
+    legend_html = '''
+    <div style="position: fixed; 
+                bottom: 120px; left: 50px; width: 200px; height: 190px; 
+                background-color: white; border:2px solid grey; z-index:9999; 
+                font-size:14px; padding: 15px; border-radius: 8px;
+                font-family: Inter, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <h4 style="margin: 0 0 12px 0; color: #1e293b; font-weight: 600;">Flood Risk Legend</h4>
+    <p style="margin: 8px 0; line-height: 1.4;"><span style="color: #FF4444; font-size: 16px;">●</span> High Risk Zone</p>
+    <p style="margin: 8px 0; line-height: 1.4;"><span style="color: #FFA500; font-size: 16px;">●</span> Medium Risk Zone</p>
+    <p style="margin: 8px 0; line-height: 1.4;"><span style="color: #FFFF00; font-size: 16px;">●</span> Low Risk Zone</p>
+    </div>
+    '''
+    m.get_root().html.add_child(folium.Element(legend_html))
+    
+    return m
+
 def main():
     # Hero Header
     st.markdown("""
@@ -1152,7 +1455,7 @@ def main():
     </div>
     <div style="text-align: center; margin-bottom: 3rem;">
         <p style="font-size: 1.2rem; color: #475569; font-weight: 400;">
-            Advanced AI-powered flood risk assessment for the Maribyrnong River system
+            Advanced AI-powered flood risk assessment for the Maribyrnong City Council
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -1172,9 +1475,9 @@ def main():
             format_func=lambda x: x,
             label_visibility="collapsed"
         )
+        
     
-    # Load data
-    weather_data = fetch_weather_data()
+    # Load historical data
     historical_df = load_historical_data()
     
     if historical_df is None:
@@ -1188,6 +1491,36 @@ def main():
     
     if main_section == "🏠 Home & Current Weather":
         st.markdown('<h2 class="section-header">Current Weather & 7-Day Forecast</h2>', unsafe_allow_html=True)
+        
+        
+        # Add suburb selection to sidebar for homepage only
+        with st.sidebar:
+            st.markdown("""
+            <div style="text-align: center; padding: 1rem 0; margin: 2rem 0 1rem 0; background: #ffffff !important;">
+                <h3 style="color: #1e293b !important; font-weight: 600; font-size: 1.1rem;">📍 Location</h3>
+                <p style="color: #64748b !important; font-size: 0.9rem;">Select your suburb</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Initialize session state for selected suburb if not exists
+            if 'selected_suburb' not in st.session_state:
+                st.session_state.selected_suburb = "Maribyrnong"
+            
+            selected_suburb = st.selectbox(
+                "Select suburb:",
+                options=list(MARIBYRNONG_SUBURBS.keys()),
+                format_func=lambda x: MARIBYRNONG_SUBURBS[x]["display"],
+                index=list(MARIBYRNONG_SUBURBS.keys()).index(st.session_state.selected_suburb),
+                key="suburb_selector",
+                label_visibility="collapsed"
+            )
+            
+            # Update session state when suburb changes
+            if selected_suburb != st.session_state.selected_suburb:
+                st.session_state.selected_suburb = selected_suburb
+        
+        # Load weather data for selected suburb
+        weather_data = fetch_weather_data(selected_suburb)
         
         if weather_data:
             current = weather_data['currentConditions']
@@ -1391,6 +1724,36 @@ def main():
             fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
             fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
             st.plotly_chart(fig, use_container_width=True)
+        
+        # Interactive Map Section - Always display regardless of weather data availability
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="alert-box alert-info">
+            <strong>🗺️ Interactive Flood Risk Map</strong><br>
+            Explore the Maribyrnong River system with real-time weather data and flood risk zones
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Create and display the map
+        try:
+            flood_map = create_maribyrnong_map(weather_data, selected_suburb)
+            map_data = st_folium(flood_map, use_container_width=True, height=600)
+            
+            # Display general map information
+            if map_data:
+                st.markdown("""
+                <div class="alert-box alert-success">
+                    <strong>📍 Interactive Map Loaded</strong><br>
+                    Click on map markers and zones for detailed information about flood risk areas
+                </div>
+                """, unsafe_allow_html=True)
+        except Exception as e:
+            st.markdown(f"""
+            <div class="alert-box alert-warning">
+                <strong>⚠️ Map Loading Error</strong><br>
+                Unable to load interactive map: {str(e)}
+            </div>
+            """, unsafe_allow_html=True)
     
     elif main_section == "🤖 Machine Learning Models":
         st.markdown('<h2 class="section-header">AI-Powered Flood Prediction Models</h2>', unsafe_allow_html=True)
@@ -2429,6 +2792,19 @@ def main():
             )
         
         if insight_type == "Risk Assessment":
+            # Use session state suburb if available, otherwise default to Maribyrnong
+            current_suburb = st.session_state.get('selected_suburb', 'Maribyrnong')
+            
+            # Display which suburb we're assessing
+            st.markdown(f"""
+            <div class="alert-box alert-info">
+                <strong>📍 Risk Assessment Location</strong><br>
+                Analyzing flood risk conditions for <strong>{MARIBYRNONG_SUBURBS[current_suburb]['display']}</strong>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Fetch weather data for selected suburb
+            weather_data = fetch_weather_data(current_suburb)
             if weather_data:
                 current = weather_data['currentConditions']
                 today_forecast = weather_data['days'][0]
