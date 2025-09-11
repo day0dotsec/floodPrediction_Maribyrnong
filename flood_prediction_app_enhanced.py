@@ -17,20 +17,24 @@ import folium
 from streamlit_folium import st_folium
 warnings.filterwarnings('ignore')
 
-# Configuration
-API_KEY = "2M3N82RD42E4CWHEKB53PWSVW"
+# Configuration - Secure API key handling
+try:
+    API_KEY = st.secrets["VISUAL_CROSSING_API_KEY"]
+except Exception as e:
+    st.error("⚠️ API key not configured. Please set VISUAL_CROSSING_API_KEY in Streamlit secrets.")
+    st.stop()
 
 # Maribyrnong City Council Suburbs with coordinates
 MARIBYRNONG_SUBURBS = {
-    "Braybrook": {"lat": -37.7894, "lon": 144.8626, "display": "Braybrook"},
-    "Footscray": {"lat": -37.7986, "lon": 144.9008, "display": "Footscray"},
-    "Kingsville": {"lat": -37.8120, "lon": 144.8890, "display": "Kingsville"},
-    "Maidstone": {"lat": -37.7830, "lon": 144.8720, "display": "Maidstone"},
-    "Maribyrnong": {"lat": -37.7749, "lon": 144.8941, "display": "Maribyrnong"},
-    "Seddon": {"lat": -37.8020, "lon": 144.8950, "display": "Seddon"},
-    "Tottenham": {"lat": -37.7980, "lon": 144.8620, "display": "Tottenham"},
-    "West Footscray": {"lat": -37.7970, "lon": 144.8840, "display": "West Footscray"},
-    "Yarraville": {"lat": -37.8136, "lon": 144.9110, "display": "Yarraville"}
+    "Braybrook": {"lat": -37.7894, "lon": 144.8626},
+    "Footscray": {"lat": -37.7986, "lon": 144.9008},
+    "Kingsville": {"lat": -37.8120, "lon": 144.8890},
+    "Maidstone": {"lat": -37.7830, "lon": 144.8720},
+    "Maribyrnong": {"lat": -37.7749, "lon": 144.8941},
+    "Seddon": {"lat": -37.8020, "lon": 144.8950},
+    "Tottenham": {"lat": -37.7980, "lon": 144.8620},
+    "West Footscray": {"lat": -37.7970, "lon": 144.8840},
+    "Yarraville": {"lat": -37.8136, "lon": 144.9110}
 }
 
 # Page configuration
@@ -1252,7 +1256,7 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     key_locations = []
     for suburb_key, suburb_data in MARIBYRNONG_SUBURBS.items():
         location = {
-            "name": suburb_data["display"],
+            "name": suburb_key,
             "lat": suburb_data["lat"],
             "lon": suburb_data["lon"],
             "type": "selected" if suburb_key == selected_suburb else "suburb"
@@ -1509,7 +1513,6 @@ def main():
             selected_suburb = st.selectbox(
                 "Select suburb:",
                 options=list(MARIBYRNONG_SUBURBS.keys()),
-                format_func=lambda x: MARIBYRNONG_SUBURBS[x]["display"],
                 index=list(MARIBYRNONG_SUBURBS.keys()).index(st.session_state.selected_suburb),
                 key="suburb_selector",
                 label_visibility="collapsed"
@@ -2799,7 +2802,7 @@ def main():
             st.markdown(f"""
             <div class="alert-box alert-info">
                 <strong>📍 Risk Assessment Location</strong><br>
-                Analyzing flood risk conditions for <strong>{MARIBYRNONG_SUBURBS[current_suburb]['display']}</strong>
+                Analyzing flood risk conditions for <strong>{current_suburb}</strong>
             </div>
             """, unsafe_allow_html=True)
             
