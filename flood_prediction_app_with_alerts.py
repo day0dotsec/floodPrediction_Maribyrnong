@@ -208,15 +208,6 @@ st.markdown("""
         color: #1e293b !important;
     }
     
-    /* Override Streamlit's built-in theme detection */
-    @media (prefers-color-scheme: dark) {
-        section[data-testid="stSidebar"], .css-1d391kg {
-            background-color: #ffffff !important;
-        }
-        section[data-testid="stSidebar"] *, .css-1d391kg * {
-            color: #1e293b !important;
-        }
-    }
     
     /* Button Enhancements */
     .stButton > button {

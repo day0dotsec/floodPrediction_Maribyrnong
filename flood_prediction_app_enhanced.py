@@ -50,26 +50,6 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Force Light Theme */
-    [data-testid="stAppViewContainer"] {
-        background-color: #f8fafc !important;
-        color: #1e293b !important;
-    }
-    
-    [data-testid="stSidebar"] {
-        background-color: #ffffff !important;
-        border-right: 1px solid #e2e8f0 !important;
-    }
-    
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-    }
-    
-    /* Override any dark theme styles */
-    .stApp, .stApp > div, .stApp .main {
-        background-color: #f8fafc !important;
-        color: #1e293b !important;
-    }
     
     /* Global Styles */
     .stApp {
@@ -229,15 +209,6 @@ st.markdown("""
         color: #1e293b !important;
     }
     
-    /* Override Streamlit's built-in theme detection */
-    @media (prefers-color-scheme: dark) {
-        section[data-testid="stSidebar"], .css-1d391kg {
-            background-color: #ffffff !important;
-        }
-        section[data-testid="stSidebar"] *, .css-1d391kg * {
-            color: #1e293b !important;
-        }
-    }
     
     /* Button Enhancements */
     .stButton > button, .stButton button, button[kind="primary"], 
@@ -910,48 +881,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Force light theme with JavaScript
-st.markdown("""
-<script>
-    // Force light theme on page load
-    function forceTheme() {
-        const body = document.body;
-        const app = document.querySelector('[data-testid="stAppViewContainer"]');
-        const sidebar = document.querySelector('[data-testid="stSidebar"]');
-        
-        // Remove dark theme classes
-        if (body) {
-            body.classList.remove('dark-theme');
-            body.classList.add('light-theme');
-        }
-        
-        // Set CSS variables for light theme
-        if (app) {
-            app.style.setProperty('--background-color', '#f8fafc', 'important');
-            app.style.setProperty('--text-color', '#1e293b', 'important');
-            app.style.setProperty('--primary-color', '#ffffff', 'important');
-        }
-        
-        // Override Streamlit's theme setting in localStorage
-        try {
-            localStorage.setItem('streamlit-theme', 'light');
-            sessionStorage.setItem('streamlit-theme', 'light');
-        } catch (e) {
-            console.log('Could not set theme in storage:', e);
-        }
-    }
-    
-    // Run on page load and periodically
-    forceTheme();
-    setTimeout(forceTheme, 100);
-    setTimeout(forceTheme, 500);
-    setTimeout(forceTheme, 1000);
-    
-    // Monitor for theme changes and override them
-    const observer = new MutationObserver(forceTheme);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-</script>
-""", unsafe_allow_html=True)
 
 @st.cache_data(ttl=300)
 def fetch_weather_data(location="Maribyrnong"):
@@ -1244,13 +1173,46 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
         # Default to Maribyrnong if suburb not found
         center_lat, center_lon = -37.7749, 144.8941
     
-    # Create base map with OpenStreetMap only
+    # Create base map with Google Maps
     m = folium.Map(
         location=[center_lat, center_lon],
         zoom_start=13,
-        tiles='OpenStreetMap',
+        tiles=None,  # Don't load default tiles
         control_scale=True
     )
+    
+    # Add OpenStreetMap first (will be default)
+    folium.TileLayer(
+        tiles='OpenStreetMap',
+        name='OpenStreetMap',
+        overlay=False,
+        control=True
+    ).add_to(m)
+    
+    # Add Google Maps layers in desired order
+    folium.TileLayer(
+        tiles='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        attr='Google Satellite',
+        name='Google Satellite',
+        overlay=False,
+        control=True
+    ).add_to(m)
+    
+    folium.TileLayer(
+        tiles='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+        attr='Google Hybrid',
+        name='Google Hybrid',
+        overlay=False,
+        control=True
+    ).add_to(m)
+    
+    folium.TileLayer(
+        tiles='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+        attr='Google Maps',
+        name='Google Maps',
+        overlay=False,
+        control=True
+    ).add_to(m)
     
     # All Maribyrnong City Council suburbs
     key_locations = []
@@ -1338,9 +1300,32 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     risk_colors = {"high": "#FF4444", "medium": "#FFA500", "low": "#FFFF00"}
     risk_opacity = {"high": 0.6, "medium": 0.4, "low": 0.3}
     
+    # Create feature groups for each risk level to enable toggle functionality
+    high_risk_group = folium.FeatureGroup(name="High Risk Zones", show=True)
+    medium_risk_group = folium.FeatureGroup(name="Medium Risk Zones", show=True)
+    low_risk_group = folium.FeatureGroup(name="Low Risk Zones", show=True)
+    
+    risk_groups = {
+        "high": high_risk_group,
+        "medium": medium_risk_group,
+        "low": low_risk_group
+    }
+    
     for zone in flood_risk_zones:
-        folium.Polygon(
-            locations=zone["coordinates"],
+        # Calculate center point of the zone for circle placement
+        lats = [coord[0] for coord in zone["coordinates"]]
+        lngs = [coord[1] for coord in zone["coordinates"]]
+        center_lat = sum(lats) / len(lats)
+        center_lng = sum(lngs) / len(lngs)
+        
+        # Calculate radius based on zone size (approximate)
+        lat_range = max(lats) - min(lats)
+        lng_range = max(lngs) - min(lngs)
+        radius = max(lat_range, lng_range) * 111000 / 2  # Convert to meters, divide by 2 for radius
+        
+        folium.Circle(
+            location=[center_lat, center_lng],
+            radius=radius,
             color=risk_colors[zone["risk"]],
             fillColor=risk_colors[zone["risk"]],
             fillOpacity=risk_opacity[zone["risk"]],
@@ -1355,7 +1340,11 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
                 </div>
             """, max_width=250),
             tooltip=f"{zone['name']} - {zone['risk'].title()} Risk"
-        ).add_to(m)
+        ).add_to(risk_groups[zone["risk"]])
+    
+    # Add all risk groups to the map
+    for group in risk_groups.values():
+        group.add_to(m)
     
     # Add key locations with custom markers
     location_icons = {
@@ -1434,18 +1423,79 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     # Add layer control
     folium.LayerControl().add_to(m)
     
-    # Add legend
+    # Add interactive legend with toggle functionality
     legend_html = '''
-    <div style="position: fixed; 
-                bottom: 120px; left: 50px; width: 200px; height: 190px; 
+    <div id="flood-legend" style="position: fixed; 
+                bottom: 120px; left: 50px; width: 220px; height: 210px; 
                 background-color: white; border:2px solid grey; z-index:9999; 
                 font-size:14px; padding: 15px; border-radius: 8px;
                 font-family: Inter, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
     <h4 style="margin: 0 0 12px 0; color: #1e293b; font-weight: 600;">Flood Risk Legend</h4>
-    <p style="margin: 8px 0; line-height: 1.4;"><span style="color: #FF4444; font-size: 16px;">●</span> High Risk Zone</p>
-    <p style="margin: 8px 0; line-height: 1.4;"><span style="color: #FFA500; font-size: 16px;">●</span> Medium Risk Zone</p>
-    <p style="margin: 8px 0; line-height: 1.4;"><span style="color: #FFFF00; font-size: 16px;">●</span> Low Risk Zone</p>
+    <div style="cursor: pointer; padding: 4px 0; border-radius: 4px; transition: background-color 0.2s;" 
+         onclick="toggleRiskLayer('high')" 
+         onmouseover="this.style.backgroundColor='#f0f0f0'" 
+         onmouseout="this.style.backgroundColor='transparent'">
+        <span id="high-indicator" style="color: #FF4444; font-size: 16px;">●</span> 
+        <span id="high-text">High Risk Zone</span>
     </div>
+    <div style="cursor: pointer; padding: 4px 0; border-radius: 4px; transition: background-color 0.2s;" 
+         onclick="toggleRiskLayer('medium')" 
+         onmouseover="this.style.backgroundColor='#f0f0f0'" 
+         onmouseout="this.style.backgroundColor='transparent'">
+        <span id="medium-indicator" style="color: #FFA500; font-size: 16px;">●</span> 
+        <span id="medium-text">Medium Risk Zone</span>
+    </div>
+    <div style="cursor: pointer; padding: 4px 0; border-radius: 4px; transition: background-color 0.2s;" 
+         onclick="toggleRiskLayer('low')" 
+         onmouseover="this.style.backgroundColor='#f0f0f0'" 
+         onmouseout="this.style.backgroundColor='transparent'">
+        <span id="low-indicator" style="color: #FFFF00; font-size: 16px;">●</span> 
+        <span id="low-text">Low Risk Zone</span>
+    </div>
+    <p style="margin: 10px 0 0 0; font-size: 11px; color: #666; font-style: italic;">Click to toggle visibility</p>
+    </div>
+    
+    <script>
+    // Track visibility state for each risk level
+    let riskVisibility = {
+        'high': true,
+        'medium': true,
+        'low': true
+    };
+    
+    function toggleRiskLayer(riskLevel) {
+        // Toggle visibility state
+        riskVisibility[riskLevel] = !riskVisibility[riskLevel];
+        
+        // Find the layer control and programmatically toggle the layer
+        const layerControl = document.querySelector('.leaflet-control-layers');
+        if (layerControl) {
+            const inputs = layerControl.querySelectorAll('input[type="checkbox"]');
+            inputs.forEach(input => {
+                const label = input.parentNode.querySelector('span');
+                if (label && label.textContent.includes(riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1) + ' Risk Zones')) {
+                    input.click();
+                }
+            });
+        }
+        
+        // Update legend appearance
+        const indicator = document.getElementById(riskLevel + '-indicator');
+        const text = document.getElementById(riskLevel + '-text');
+        
+        if (riskVisibility[riskLevel]) {
+            // Show layer - full opacity
+            indicator.style.opacity = '1';
+            text.style.opacity = '1';
+            text.style.textDecoration = 'none';
+        } else {
+            // Hide layer - reduced opacity and strikethrough
+            indicator.style.opacity = '0.3';
+            text.style.opacity = '0.5';
+            text.style.textDecoration = 'line-through';
+        }
+    }
+    </script>
     '''
     m.get_root().html.add_child(folium.Element(legend_html))
     
@@ -1537,7 +1587,8 @@ def main():
                 <div class="weather-card">
                     <h3>🌡️ Temperature</h3>
                     <h2>{current['temp']}°C</h2>
-                    <p>High: {today_forecast['tempmax']}°C | Low: {today_forecast['tempmin']}°C</p>
+                    <p style="color: #64748b; margin: 5px 0;">Feels like {current.get('feelslike', 'N/A')}°C</p>
+                    <p>High: <strong>{today_forecast['tempmax']}°C</strong> | Low: <strong>{today_forecast['tempmin']}°C</strong></p>
                 </div>
                 """, unsafe_allow_html=True)
             
