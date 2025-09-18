@@ -1297,7 +1297,7 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     ]
     
     # Add flood risk zones
-    risk_colors = {"high": "#FF4444", "medium": "#FFA500", "low": "#FFFF00"}
+    risk_colors = {"high": "#FF4444", "medium": "#FFA500", "low": "#28A745"}
     risk_opacity = {"high": 0.6, "medium": 0.4, "low": 0.3}
     
     # Create feature groups for each risk level to enable toggle functionality
@@ -1450,7 +1450,7 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
         <span style="color: #1e293b;">Medium Risk Zone</span>
     </div>
     <div style="padding: 6px 0; display: flex; align-items: center;">
-        <span style="color: #FFFF00; font-size: 16px; margin-right: 8px;">●</span>
+        <span style="color: #28A745; font-size: 16px; margin-right: 8px;">●</span>
         <span style="color: #1e293b;">Low Risk Zone</span>
     </div>
     <p style="margin: 12px 0 0 0; font-size: 11px; color: #666; font-style: italic;">Use Map Layers to toggle visibility</p>
