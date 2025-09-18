@@ -26,15 +26,15 @@ except Exception as e:
 
 # Maribyrnong City Council Suburbs with coordinates
 MARIBYRNONG_SUBURBS = {
-    "Braybrook": {"lat": -37.7894, "lon": 144.8626},
-    "Footscray": {"lat": -37.7986, "lon": 144.9008},
-    "Kingsville": {"lat": -37.8120, "lon": 144.8890},
-    "Maidstone": {"lat": -37.7830, "lon": 144.8720},
-    "Maribyrnong": {"lat": -37.7749, "lon": 144.8941},
-    "Seddon": {"lat": -37.8020, "lon": 144.8950},
-    "Tottenham": {"lat": -37.7980, "lon": 144.8620},
-    "West Footscray": {"lat": -37.7970, "lon": 144.8840},
-    "Yarraville": {"lat": -37.8136, "lon": 144.9110}
+    "Braybrook": {"lat": -37.7856, "lon": 144.8553},
+    "Footscray": {"lat": -37.8000, "lon": 144.9000},
+    "Kingsville": {"lat": -37.8090, "lon": 144.8780},
+    "Maidstone": {"lat": -37.7830, "lon": 144.8780},
+    "Maribyrnong": {"lat": -37.7700, "lon": 144.8930},
+    "Seddon": {"lat": -37.8100, "lon": 144.8939},
+    "Tottenham": {"lat": -37.8060, "lon": 144.8570},
+    "West Footscray": {"lat": -37.8090, "lon": 144.8740},
+    "Yarraville": {"lat": -37.8170, "lon": 144.8900}
 }
 
 # Page configuration
@@ -1170,8 +1170,8 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
         center_lat = MARIBYRNONG_SUBURBS[selected_suburb]["lat"]
         center_lon = MARIBYRNONG_SUBURBS[selected_suburb]["lon"]
     else:
-        # Default to Maribyrnong if suburb not found
-        center_lat, center_lon = -37.7749, 144.8941
+        # Default to Maribyrnong suburb if suburb not found
+        center_lat, center_lon = -37.7700, 144.8930
     
     # Create base map with Google Maps
     m = folium.Map(
@@ -1238,59 +1238,59 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
         # High Risk Zones - Close to river mouth and main waterways
         {
             "name": "High Risk Zone - Yarraville/River Mouth",
-            "coordinates": [[-37.8200, 144.9050], [-37.8200, 144.9200], [-37.8070, 144.9200], [-37.8070, 144.9050]],
+            "coordinates": [[-37.8270, 144.8800], [-37.8270, 144.9000], [-37.8070, 144.9000], [-37.8070, 144.8800]],
             "risk": "high",
             "description": "Critical flood zone near Maribyrnong River mouth and Yarra junction"
         },
         {
             "name": "High Risk Zone - Footscray Central",
-            "coordinates": [[-37.8050, 144.8950], [-37.8050, 144.9070], [-37.7920, 144.9070], [-37.7920, 144.8950]],
+            "coordinates": [[-37.8100, 144.8900], [-37.8100, 144.9100], [-37.7900, 144.9100], [-37.7900, 144.8900]],
             "risk": "high",
             "description": "High flood risk along main river channel through Footscray"
         },
-        
+
         # Medium Risk Zones - Adjacent to waterways and urban areas
         {
             "name": "Medium Risk Zone - West Footscray",
-            "coordinates": [[-37.8070, 144.8800], [-37.8070, 144.8920], [-37.7870, 144.8920], [-37.7870, 144.8800]],
+            "coordinates": [[-37.8190, 144.8640], [-37.8190, 144.8840], [-37.7990, 144.8840], [-37.7990, 144.8640]],
             "risk": "medium",
             "description": "Moderate flood risk in West Footscray residential areas"
         },
         {
             "name": "Medium Risk Zone - Seddon",
-            "coordinates": [[-37.8120, 144.8900], [-37.8120, 144.9020], [-37.7920, 144.9020], [-37.7920, 144.8900]],
+            "coordinates": [[-37.8200, 144.8839], [-37.8200, 144.9039], [-37.8000, 144.9039], [-37.8000, 144.8839]],
             "risk": "medium",
             "description": "Medium flood risk in Seddon along Maribyrnong River"
         },
         {
             "name": "Medium Risk Zone - Maribyrnong Central",
-            "coordinates": [[-37.7850, 144.8850], [-37.7850, 144.9050], [-37.7650, 144.9050], [-37.7650, 144.8850]],
+            "coordinates": [[-37.7800, 144.8830], [-37.7800, 144.9030], [-37.7600, 144.9030], [-37.7600, 144.8830]],
             "risk": "medium",
             "description": "Moderate flood risk in central Maribyrnong suburb"
         },
         {
             "name": "Low Risk Zone - Braybrook",
-            "coordinates": [[-37.7970, 144.8550], [-37.7970, 144.8700], [-37.7820, 144.8700], [-37.7820, 144.8550]],
+            "coordinates": [[-37.7956, 144.8453], [-37.7956, 144.8653], [-37.7756, 144.8653], [-37.7756, 144.8453]],
             "risk": "low",
             "description": "Low flood risk in Braybrook residential area"
         },
-        
+
         # Low Risk Zones - Further from main waterways
         {
             "name": "Low Risk Zone - Kingsville",
-            "coordinates": [[-37.8200, 144.8820], [-37.8200, 144.8960], [-37.8040, 144.8960], [-37.8040, 144.8820]],
+            "coordinates": [[-37.8190, 144.8680], [-37.8190, 144.8880], [-37.7990, 144.8880], [-37.7990, 144.8680]],
             "risk": "low",
             "description": "Lower flood risk in Kingsville residential area"
         },
         {
             "name": "Low Risk Zone - Maidstone",
-            "coordinates": [[-37.7930, 144.8650], [-37.7930, 144.8790], [-37.7730, 144.8790], [-37.7730, 144.8650]],
+            "coordinates": [[-37.7930, 144.8680], [-37.7930, 144.8880], [-37.7730, 144.8880], [-37.7730, 144.8680]],
             "risk": "low",
             "description": "Low flood risk in Maidstone suburb"
         },
         {
             "name": "Low Risk Zone - Tottenham",
-            "coordinates": [[-37.8080, 144.8550], [-37.8080, 144.8690], [-37.7880, 144.8690], [-37.7880, 144.8550]],
+            "coordinates": [[-37.8160, 144.8470], [-37.8160, 144.8670], [-37.7960, 144.8670], [-37.7960, 144.8470]],
             "risk": "low",
             "description": "Lower flood risk in Tottenham industrial/residential area"
         }
@@ -1393,11 +1393,21 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     # Add weather information if available
     if weather_data and 'currentConditions' in weather_data:
         current = weather_data['currentConditions']
-        
-        # Add weather marker at main location
+
+        # Get the exact coordinates for the selected suburb
+        if selected_suburb in MARIBYRNONG_SUBURBS:
+            weather_lat = MARIBYRNONG_SUBURBS[selected_suburb]["lat"]
+            weather_lon = MARIBYRNONG_SUBURBS[selected_suburb]["lon"]
+            suburb_name = selected_suburb
+        else:
+            # Fallback to Maribyrnong if suburb not found
+            weather_lat, weather_lon = -37.7700, 144.8930
+            suburb_name = "Maribyrnong"
+
+        # Add weather marker at selected suburb location
         weather_popup = f"""
         <div style="font-family: Inter, sans-serif; max-width: 250px;">
-            <h4 style="color: #1e293b; margin: 5px 0;">🌡️ Current Weather</h4>
+            <h4 style="color: #1e293b; margin: 5px 0;">🌡️ Current Weather - {suburb_name}</h4>
             <div style="margin: 10px 0;">
                 <p style="margin: 3px 0;"><strong>Temperature:</strong> {current.get('temp', 'N/A')}°C</p>
                 <p style="margin: 3px 0;"><strong>Humidity:</strong> {current.get('humidity', 'N/A')}%</p>
@@ -1407,11 +1417,11 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
             </div>
         </div>
         """
-        
+
         folium.Marker(
-            location=[center_lat, center_lon],
+            location=[weather_lat, weather_lon],
             popup=folium.Popup(weather_popup, max_width=300),
-            tooltip="Current Weather Conditions",
+            tooltip=f"Current Weather Conditions - {suburb_name}",
             icon=folium.Icon(
                 color='orange',
                 icon='cloud',
@@ -1423,82 +1433,32 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     # Add layer control
     folium.LayerControl().add_to(m)
     
-    # Add interactive legend with toggle functionality
+    # Add simple display-only legend
     legend_html = '''
-    <div id="flood-legend" style="position: fixed; 
-                bottom: 120px; left: 50px; width: 220px; height: 210px; 
-                background-color: white; border:2px solid grey; z-index:9999; 
+    <div id="flood-legend" style="position: fixed;
+                bottom: 120px; left: 50px; width: 220px; height: 210px;
+                background-color: white; border:2px solid grey; z-index:9999;
                 font-size:14px; padding: 15px; border-radius: 8px;
                 font-family: Inter, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
     <h4 style="margin: 0 0 12px 0; color: #1e293b; font-weight: 600;">Flood Risk Legend</h4>
-    <div style="cursor: pointer; padding: 4px 0; border-radius: 4px; transition: background-color 0.2s;" 
-         onclick="toggleRiskLayer('high')" 
-         onmouseover="this.style.backgroundColor='#f0f0f0'" 
-         onmouseout="this.style.backgroundColor='transparent'">
-        <span id="high-indicator" style="color: #FF4444; font-size: 16px;">●</span> 
-        <span id="high-text">High Risk Zone</span>
+    <div style="padding: 6px 0; display: flex; align-items: center;">
+        <span style="color: #FF4444; font-size: 16px; margin-right: 8px;">●</span>
+        <span style="color: #1e293b;">High Risk Zone</span>
     </div>
-    <div style="cursor: pointer; padding: 4px 0; border-radius: 4px; transition: background-color 0.2s;" 
-         onclick="toggleRiskLayer('medium')" 
-         onmouseover="this.style.backgroundColor='#f0f0f0'" 
-         onmouseout="this.style.backgroundColor='transparent'">
-        <span id="medium-indicator" style="color: #FFA500; font-size: 16px;">●</span> 
-        <span id="medium-text">Medium Risk Zone</span>
+    <div style="padding: 6px 0; display: flex; align-items: center;">
+        <span style="color: #FFA500; font-size: 16px; margin-right: 8px;">●</span>
+        <span style="color: #1e293b;">Medium Risk Zone</span>
     </div>
-    <div style="cursor: pointer; padding: 4px 0; border-radius: 4px; transition: background-color 0.2s;" 
-         onclick="toggleRiskLayer('low')" 
-         onmouseover="this.style.backgroundColor='#f0f0f0'" 
-         onmouseout="this.style.backgroundColor='transparent'">
-        <span id="low-indicator" style="color: #FFFF00; font-size: 16px;">●</span> 
-        <span id="low-text">Low Risk Zone</span>
+    <div style="padding: 6px 0; display: flex; align-items: center;">
+        <span style="color: #FFFF00; font-size: 16px; margin-right: 8px;">●</span>
+        <span style="color: #1e293b;">Low Risk Zone</span>
     </div>
-    <p style="margin: 10px 0 0 0; font-size: 11px; color: #666; font-style: italic;">Click to toggle visibility</p>
+    <p style="margin: 12px 0 0 0; font-size: 11px; color: #666; font-style: italic;">Use Map Layers to toggle visibility</p>
     </div>
-    
-    <script>
-    // Track visibility state for each risk level
-    let riskVisibility = {
-        'high': true,
-        'medium': true,
-        'low': true
-    };
-    
-    function toggleRiskLayer(riskLevel) {
-        // Toggle visibility state
-        riskVisibility[riskLevel] = !riskVisibility[riskLevel];
-        
-        // Find the layer control and programmatically toggle the layer
-        const layerControl = document.querySelector('.leaflet-control-layers');
-        if (layerControl) {
-            const inputs = layerControl.querySelectorAll('input[type="checkbox"]');
-            inputs.forEach(input => {
-                const label = input.parentNode.querySelector('span');
-                if (label && label.textContent.includes(riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1) + ' Risk Zones')) {
-                    input.click();
-                }
-            });
-        }
-        
-        // Update legend appearance
-        const indicator = document.getElementById(riskLevel + '-indicator');
-        const text = document.getElementById(riskLevel + '-text');
-        
-        if (riskVisibility[riskLevel]) {
-            // Show layer - full opacity
-            indicator.style.opacity = '1';
-            text.style.opacity = '1';
-            text.style.textDecoration = 'none';
-        } else {
-            // Hide layer - reduced opacity and strikethrough
-            indicator.style.opacity = '0.3';
-            text.style.opacity = '0.5';
-            text.style.textDecoration = 'line-through';
-        }
-    }
-    </script>
     '''
     m.get_root().html.add_child(folium.Element(legend_html))
-    
+
+
     return m
 
 def main():
