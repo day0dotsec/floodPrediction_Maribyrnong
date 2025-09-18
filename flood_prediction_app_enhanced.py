@@ -1666,14 +1666,16 @@ def main():
             
             forecast_data = []
             for day in weather_data['days'][:7]:
+                date_obj = pd.to_datetime(day['datetime'])
                 forecast_data.append({
                     'Date': day['datetime'],
+                    'Day': date_obj.strftime('%A'),
                     'High (°C)': day['tempmax'],
                     'Low (°C)': day['tempmin'],
                     'Precipitation (mm)': day['precip'],
                     'Conditions': day['conditions']
                 })
-            
+
             forecast_df = pd.DataFrame(forecast_data)
             
             # Enhanced chart with custom styling
