@@ -1082,6 +1082,10 @@ def predict_risk_with_lstm(weather_sequence_data):
         # Import torch and make prediction
         try:
             import torch
+            # Apply the patch to prevent Streamlit watcher conflicts
+            from torch_utils import patch_torch_classes
+            patch_torch_classes()
+
             model.eval()
             with torch.no_grad():
                 sequence_tensor = torch.FloatTensor(sequence_scaled)
