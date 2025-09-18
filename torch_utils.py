@@ -1,6 +1,43 @@
 """
 Isolated PyTorch utilities to avoid Streamlit file watcher conflicts
 """
+import sys
+import os
+
+def patch_torch_classes():
+    """Patch torch.classes to prevent Streamlit file watcher conflicts"""
+    try:
+        import torch
+        # Create a safe wrapper for torch.classes that won't cause inspection issues
+        if hasattr(torch, 'classes') and hasattr(torch.classes, '__path__'):
+            original_path = torch.classes.__path__
+
+            class SafeClassesPath:
+                def __init__(self, original_path):
+                    self._original = original_path
+
+                def __iter__(self):
+                    # Return empty iterator to avoid _path inspection issues
+                    return iter([])
+
+                @property
+                def _path(self):
+                    # Return empty list instead of problematic _path
+                    return []
+
+                def __getattr__(self, name):
+                    # Safely delegate other attributes
+                    try:
+                        return getattr(self._original, name)
+                    except:
+                        return None
+
+            # Replace the problematic __path__ with our safe version
+            torch.classes.__path__ = SafeClassesPath(original_path)
+
+    except Exception as e:
+        # If patching fails, continue without it
+        pass
 
 def create_lstm_model():
     """Create LSTM model with completely isolated torch imports"""
@@ -8,6 +45,9 @@ def create_lstm_model():
         # Import torch only in function scope to avoid module inspection
         import torch
         import torch.nn as nn
+
+        # Apply the patch immediately after import
+        patch_torch_classes()
         
         class LSTMFloodPredictor(nn.Module):
             def __init__(self, input_size, hidden_size, num_layers, output_size=3, dropout=0.2):
@@ -42,7 +82,10 @@ def train_lstm_isolated(X, y):
         from sklearn.model_selection import train_test_split
         from sklearn.metrics import accuracy_score, classification_report
         import numpy as np
-        
+
+        # Apply the patch before any torch operations
+        patch_torch_classes()
+
         LSTMFloodPredictor, torch, nn = create_lstm_model()
         if LSTMFloodPredictor is None:
             return None, 0.0, None, None
