@@ -1574,7 +1574,7 @@ def main():
                 st.markdown(f"""
                 <div class="weather-card">
                     <h3>💨 Wind Speed</h3>
-                    <h2>{current['windspeed']}</h2>
+                    <h2>{current['windspeed']} km/h</h2>
                     <p>Direction: {current['winddir']}°</p>
                 </div>
                 """, unsafe_allow_html=True)
