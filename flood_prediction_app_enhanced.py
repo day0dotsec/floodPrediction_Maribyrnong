@@ -882,6 +882,25 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+def degrees_to_cardinal(degrees):
+    """Convert wind direction from degrees to cardinal direction"""
+    if degrees is None:
+        return "Unknown"
+
+    # Normalize degrees to 0-360 range
+    degrees = degrees % 360
+
+    # Cardinal directions with 16-point compass
+    directions = [
+        "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+        "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
+    ]
+
+    # Each direction covers 22.5 degrees (360/16)
+    index = round(degrees / 22.5) % 16
+    return directions[index]
+
+
 @st.cache_data(ttl=300)
 def fetch_weather_data(location="Maribyrnong"):
     """Fetch current weather data from Visual Crossing API for specified location"""
@@ -1365,8 +1384,8 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
             status_text = "🌟 Currently Selected"
             type_text = "Maribyrnong City Council Suburb"
         elif location["type"] == "suburb":
-            status_text = "🏘️ Maribyrnong City Council Suburb"
-            type_text = "Maribyrnong City Council Area"
+            status_text = "🏘️ Suburb"
+            type_text = "Maribyrnong City Council"
         elif location["type"] == "river_mouth":
             status_text = "🌊 Reference Point"
             type_text = "Maribyrnong River Mouth"
@@ -1579,7 +1598,7 @@ def main():
                 <div class="weather-card">
                     <h3>💨 Wind Speed</h3>
                     <h2>{current['windspeed']} km/h</h2>
-                    <p>Direction: {current['winddir']}°</p>
+                    <p>Direction: {degrees_to_cardinal(current['winddir'])} ({current['winddir']}°)</p>
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -1750,7 +1769,7 @@ def main():
         st.markdown("""
         <div class="alert-box alert-info">
             <strong>🗺️ Interactive Flood Risk Map</strong><br>
-            Explore the Maribyrnong River system with real-time weather data and flood risk zones
+            View flood risk zones and weather conditions for the Maribyrnong City Council suburbs
         </div>
         """, unsafe_allow_html=True)
         
