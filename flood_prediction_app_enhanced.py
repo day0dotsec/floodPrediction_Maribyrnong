@@ -968,23 +968,22 @@ def create_progress_bar(percentage, label):
 def calculate_risk_severity_from_weather(weather_data, forecast_days_data=None):
     """
     Calculate 3-class risk severity from current weather conditions
-    Uses LSTM model if available and sufficient forecast data is provided,
-    otherwise falls back to rule-based assessment
-    
+    Uses trained models with priority: LSTM > Logistic Regression > Rule-based
+
     Args:
         weather_data: Current weather conditions dictionary
         forecast_days_data: Optional list of 7-day forecast data for LSTM prediction
-    
-    Returns: (risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score)
+
+    Returns: (risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence)
     """
     import numpy as np
-    
-    # Check if we have a trained LSTM model and sufficient forecast data
+
+    # Priority 1: Check if we have a trained LSTM model and sufficient forecast data
     model_type = "Rule-based"
-    if ('trained_lstm_model' in st.session_state and 
-        forecast_days_data is not None and 
+    if ('trained_lstm_model' in st.session_state and
+        forecast_days_data is not None and
         len(forecast_days_data) >= 7):
-        
+
         # Try LSTM prediction first
         lstm_result = predict_risk_with_lstm(forecast_days_data)
         if lstm_result is not None:
@@ -993,8 +992,19 @@ def calculate_risk_severity_from_weather(weather_data, forecast_days_data=None):
             # Convert confidence to risk_score equivalent (0-10 scale)
             risk_score = (risk_level_int - 1) * 3.5 + (confidence * 2.5)
             return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence
-    
-    # Fall back to rule-based calculation
+
+    # Priority 2: Check if we have a trained Logistic Regression model
+    if 'trained_lr_model' in st.session_state:
+        # Try Logistic Regression prediction
+        lr_result = predict_risk_with_lr(weather_data)
+        if lr_result is not None:
+            risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence = lr_result
+            model_type = "Logistic Regression"
+            # Convert confidence to risk_score equivalent (0-10 scale)
+            risk_score = (risk_level_int - 1) * 3.5 + (confidence * 2.5)
+            return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence
+
+    # Priority 3: Fall back to rule-based calculation
     # Initialize risk score
     risk_score = 0.0
     
@@ -1140,6 +1150,71 @@ def predict_risk_with_lstm(weather_sequence_data):
         # Fallback to rule-based if LSTM fails
         return None
 
+def predict_risk_with_lr(weather_data):
+    """
+    Use trained Logistic Regression model to predict risk severity from current weather
+
+    Args:
+        weather_data: Dictionary of current weather conditions
+
+    Returns:
+        (risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence)
+    """
+    try:
+        # Check if we have a trained model
+        if 'trained_lr_model' not in st.session_state:
+            return None
+
+        model = st.session_state['trained_lr_model']
+        scaler = st.session_state['lr_scaler']
+        feature_cols = st.session_state['lr_feature_cols']
+
+        # Extract features from current weather
+        features = []
+        for col in feature_cols:
+            features.append(weather_data.get(col, 0))
+
+        # Convert to numpy array and scale
+        import numpy as np
+        features_array = np.array(features).reshape(1, -1)
+        features_scaled = scaler.transform(features_array)
+
+        # Make prediction
+        prediction = model.predict(features_scaled)[0]
+        probabilities = model.predict_proba(features_scaled)[0]
+
+        # The model predicts classes 1, 2, 3 directly
+        # But predict_proba returns array [prob_class_1, prob_class_2, prob_class_3]
+        risk_level_int = int(prediction)
+
+        # Get the correct probability based on the class index
+        # Classes are 1, 2, 3, but array indices are 0, 1, 2
+        class_index = risk_level_int - 1
+        confidence = probabilities[class_index]
+
+        # Map to display values
+        risk_names = {1: "LOW", 2: "MEDIUM", 3: "HIGH"}
+        risk_classes = {1: "risk-low", 2: "risk-medium", 3: "risk-high"}
+        risk_icons = {1: "🟢", 2: "🟡", 3: "🔴"}
+        risk_colors = {1: "#16a34a", 2: "#d97706", 3: "#dc2626"}
+
+        return (
+            risk_level_int,
+            risk_names[risk_level_int],
+            risk_classes[risk_level_int],
+            risk_icons[risk_level_int],
+            risk_colors[risk_level_int],
+            confidence
+        )
+
+    except Exception as e:
+        # Fallback to rule-based if LR fails
+        # Temporarily showing errors for debugging
+        st.warning(f"⚠️ LR prediction failed: {e}")
+        import traceback
+        st.code(traceback.format_exc())
+        return None
+
 def get_model_status():
     """Get current model status and info"""
     has_model = 'trained_lstm_model' in st.session_state and st.session_state['trained_lstm_model'] is not None
@@ -1182,9 +1257,9 @@ def train_lstm_model_safe(X, y):
         from torch_utils import train_lstm_isolated
         return train_lstm_isolated(X, y)
     except ImportError:
-        return None, 0.0, None, None
+        return None, 0.0, None, None, None
     except Exception as e:
-        return None, 0.0, None, None
+        return None, 0.0, None, None, None
 
 def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     """Create an interactive map of the Maribyrnong River system with weather overlays"""
@@ -1624,9 +1699,14 @@ def main():
                 
                 result = calculate_risk_severity_from_weather(current_weather, forecast_data)
                 risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, lstm_confidence = result
-                
+
                 # Model status indicator
-                model_status = "🧠 LSTM" if model_type == "LSTM Neural Network" else "📊 Rule-based"
+                if model_type == "LSTM Neural Network":
+                    model_status = "🧠 LSTM"
+                elif model_type == "Logistic Regression":
+                    model_status = "📊 Logistic Regression"
+                else:
+                    model_status = "📊 Rule-based"
                 
                 st.markdown(f"""
                 <div class="weather-card" style="border-left: 4px solid {risk_color};">
@@ -1858,8 +1938,8 @@ def main():
                             progress_bar.progress((i + 1) / 100)
                         
                         X, y, scaler, feature_cols = prepare_lstm_data(historical_df)
-                        model, accuracy, X_test, y_test = train_lstm_model_safe(X, y)
-                        
+                        model, accuracy, X_test, y_test, metrics = train_lstm_model_safe(X, y)
+
                         if model is not None:
                             # Save trained model and metadata in session state
                             st.session_state['trained_lstm_model'] = model
@@ -1868,6 +1948,10 @@ def main():
                             st.session_state['lstm_accuracy'] = accuracy
                             st.session_state['lstm_training_date'] = pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
                             st.session_state['model_status'] = 'LSTM'
+
+                            # Store metrics for model comparison
+                            if metrics is not None:
+                                st.session_state['lstm_metrics'] = metrics
                             st.markdown(f"""
                             <div class="alert-box alert-success">
                                 <strong>✅ Training Complete!</strong><br>
@@ -1943,22 +2027,36 @@ def main():
                     X_test_scaled = scaler.transform(X_test)
                     
                     # Use multinomial logistic regression for 3-class
-                    lr_model = LogisticRegression(random_state=42, max_iter=1000, 
+                    lr_model = LogisticRegression(random_state=42, max_iter=1000,
                                                 multi_class='multinomial', solver='lbfgs')
                     lr_model.fit(X_train_scaled, y_train)
-                    
+
+                    # Store trained model in session state for homepage predictions
+                    st.session_state['trained_lr_model'] = lr_model
+                    st.session_state['lr_scaler'] = scaler
+                    st.session_state['lr_feature_cols'] = feature_cols
+
                     y_pred = lr_model.predict(X_test_scaled)
                     accuracy = accuracy_score(y_test, y_pred)
                     
                     # Get classification report
                     class_names = ['Low Risk', 'Medium Risk', 'High Risk']
-                    class_report = classification_report(y_test, y_pred, 
+                    class_report = classification_report(y_test, y_pred,
                                                        target_names=class_names, output_dict=True)
-                    
+
+                    # Store metrics for model comparison
+                    st.session_state['lr_metrics'] = {
+                        'accuracy': accuracy,
+                        'precision': class_report['weighted avg']['precision'],
+                        'recall': class_report['weighted avg']['recall'],
+                        'f1_score': class_report['weighted avg']['f1-score']
+                    }
+
                     st.markdown(f"""
                     <div class="alert-box alert-success">
                         <strong>✅ Model Trained Successfully!</strong><br>
-                        3-Class Multinomial Model achieved {accuracy:.4f} accuracy
+                        3-Class Multinomial Model achieved {accuracy:.4f} accuracy<br>
+                        <small>This model will now be used for predictions on the homepage</small>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -2868,9 +2966,14 @@ def main():
                 
                 result = calculate_risk_severity_from_weather(current_weather, forecast_data)
                 risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, lstm_confidence = result
-                
+
                 # Model status indicator
-                model_indicator = "🧠 LSTM Neural Network" if model_type == "LSTM Neural Network" else "📊 Rule-based Assessment"
+                if model_type == "LSTM Neural Network":
+                    model_indicator = "🧠 LSTM Neural Network"
+                elif model_type == "Logistic Regression":
+                    model_indicator = "📊 Logistic Regression Model"
+                else:
+                    model_indicator = "📊 Rule-based Assessment"
                 
                 # Enhanced risk display with 3-class system
                 st.markdown(f"""
@@ -3045,44 +3148,89 @@ def main():
         
         elif insight_type == "Model Comparison":
             st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">⚖️ Model Performance Comparison</h3>', unsafe_allow_html=True)
-            
-            model_performance = pd.DataFrame({
-                'Model': ['LSTM Neural Network', 'Logistic Regression', 'K-Means Clustering'],
-                'Accuracy': [0.85, 0.78, 0.72],
-                'Precision': [0.80, 0.75, 0.68],
-                'Recall': [0.82, 0.73, 0.70],
-                'F1-Score': [0.81, 0.74, 0.69]
-            })
+
+            # Build model performance data from actual trained models
+            models_data = []
+
+            # LSTM metrics
+            if 'lstm_metrics' in st.session_state:
+                lstm_metrics = st.session_state['lstm_metrics']
+                models_data.append({
+                    'Model': 'LSTM Neural Network',
+                    'Accuracy': lstm_metrics['accuracy'],
+                    'Precision': lstm_metrics['precision'],
+                    'Recall': lstm_metrics['recall'],
+                    'F1-Score': lstm_metrics['f1_score'],
+                    'Status': '✅ Trained'
+                })
+            else:
+                models_data.append({
+                    'Model': 'LSTM Neural Network',
+                    'Accuracy': 0.0,
+                    'Precision': 0.0,
+                    'Recall': 0.0,
+                    'F1-Score': 0.0,
+                    'Status': '⚪ Not Trained'
+                })
+
+            # Logistic Regression metrics
+            if 'lr_metrics' in st.session_state:
+                lr_metrics = st.session_state['lr_metrics']
+                models_data.append({
+                    'Model': 'Logistic Regression',
+                    'Accuracy': lr_metrics['accuracy'],
+                    'Precision': lr_metrics['precision'],
+                    'Recall': lr_metrics['recall'],
+                    'F1-Score': lr_metrics['f1_score'],
+                    'Status': '✅ Trained'
+                })
+            else:
+                models_data.append({
+                    'Model': 'Logistic Regression',
+                    'Accuracy': 0.0,
+                    'Precision': 0.0,
+                    'Recall': 0.0,
+                    'F1-Score': 0.0,
+                    'Status': '⚪ Not Trained'
+                })
+
+            model_performance = pd.DataFrame(models_data)
             
             # Enhanced performance table
             st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.dataframe(model_performance, use_container_width=True, hide_index=True)
             st.markdown('</div>', unsafe_allow_html=True)
-            
-            # Enhanced comparison chart
-            fig = px.bar(
-                model_performance, x='Model', 
-                y=['Accuracy', 'Precision', 'Recall', 'F1-Score'],
-                title='Comprehensive Model Performance Analysis',
-                barmode='group',
-                color_discrete_sequence=['#667eea', '#764ba2', '#f093fb', '#f5576c']
-            )
-            fig.update_layout(
-                plot_bgcolor='#ffffff',
-                paper_bgcolor='#ffffff',
-                font=dict(family="Inter", size=12, color='#1e293b'),
-                height=500,
-                title_font_color='#1e293b',
-                legend=dict(
-                    font=dict(color='#1e293b'),
-                    bgcolor='rgba(255,255,255,0.9)',
-                    bordercolor='#e2e8f0',
-                    borderwidth=1
+
+            # Check if any models are trained
+            trained_models = model_performance[model_performance['Status'] == '✅ Trained']
+
+            if len(trained_models) > 0:
+                # Enhanced comparison chart - only for trained models
+                fig = px.bar(
+                    trained_models, x='Model',
+                    y=['Accuracy', 'Precision', 'Recall', 'F1-Score'],
+                    title='Trained Model Performance Analysis',
+                    barmode='group',
+                    color_discrete_sequence=['#667eea', '#764ba2', '#f093fb', '#f5576c']
                 )
-            )
-            fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
-            fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
-            st.plotly_chart(fig, use_container_width=True)
+                fig.update_layout(
+                    plot_bgcolor='#ffffff',
+                    paper_bgcolor='#ffffff',
+                    font=dict(family="Inter", size=12, color='#1e293b'),
+                    height=500,
+                    title_font_color='#1e293b',
+                    legend=dict(
+                        font=dict(color='#1e293b'),
+                        bgcolor='rgba(255,255,255,0.9)',
+                        bordercolor='#e2e8f0',
+                        borderwidth=1
+                    )
+                )
+                fig.update_xaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
+                fig.update_yaxes(tickfont=dict(color='#1e293b'), title_font_color='#1e293b')
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("📊 Train models in the 'Model Training' section to see performance comparisons here.")
         
         elif insight_type == "Recommendations":
             st.markdown('<h3 style="color: #667eea; margin-bottom: 2rem;">💡 Expert Recommendations</h3>', unsafe_allow_html=True)
