@@ -129,18 +129,28 @@ def train_lstm_isolated(X, y):
             test_outputs = model(X_test)
             _, test_predictions = torch.max(test_outputs.data, 1)
             accuracy = (test_predictions == y_test).float().mean()
-            
+
             # Convert to numpy for detailed metrics
             y_test_np = y_test.numpy()
             y_pred_np = test_predictions.numpy()
-            
-            # Print classification report
+
+            # Get classification report with metrics
             class_names = ['Low Risk', 'Medium Risk', 'High Risk']
+            class_report = classification_report(y_test_np, y_pred_np,
+                                                target_names=class_names, output_dict=True)
             print("\nClassification Report:")
             print(classification_report(y_test_np, y_pred_np, target_names=class_names))
-        
-        return model, accuracy.item(), X_test, y_test
+
+            # Extract metrics for comparison
+            metrics = {
+                'accuracy': accuracy.item(),
+                'precision': class_report['weighted avg']['precision'],
+                'recall': class_report['weighted avg']['recall'],
+                'f1_score': class_report['weighted avg']['f1-score']
+            }
+
+        return model, accuracy.item(), X_test, y_test, metrics
     
     except Exception as e:
         print(f"Training error: {e}")
-        return None, 0.0, None, None
+        return None, 0.0, None, None, None
