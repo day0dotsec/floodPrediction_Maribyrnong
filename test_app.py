@@ -122,7 +122,7 @@ def main():
     if passed == total:
         print("[SUCCESS] All tests passed! The application should work correctly.")
         print("\nTo run the Streamlit app:")
-        print("streamlit run flood_prediction_app.py")
+        print("streamlit run flood_prediction_app_enhanced.py")
     else:
         print("[FAILED] Some tests failed. Please check the errors above.")
         
