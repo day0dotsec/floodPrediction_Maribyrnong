@@ -88,19 +88,19 @@ def train_lstm_isolated(X, y):
 
         LSTMFloodPredictor, torch, nn = create_lstm_model()
         if LSTMFloodPredictor is None:
-            return None, 0.0, None, None
-        
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+            return None, 0.0, None, None, None
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                           random_state=42, stratify=y)
         
         X_train = torch.FloatTensor(X_train)
         X_test = torch.FloatTensor(X_test)
         y_train = torch.LongTensor(y_train)  # LongTensor for class indices
         y_test = torch.LongTensor(y_test)
-        
-        model = LSTMFloodPredictor(input_size=X_train.shape[2], hidden_size=50, 
+
+        model = LSTMFloodPredictor(input_size=X_train.shape[2], hidden_size=50,
                                   num_layers=2, output_size=3)  # 3 classes
-        
+
         criterion = nn.NLLLoss()  # Negative Log Likelihood for multi-class
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
         
@@ -112,7 +112,7 @@ def train_lstm_isolated(X, y):
             loss = criterion(outputs, y_train)
             loss.backward()
             optimizer.step()
-            
+
             # Print progress every 30 epochs
             if (epoch + 1) % 30 == 0:
                 model.eval()
