@@ -1,6 +1,6 @@
   MIT License
 
-  Copyright (c) 2025 Joeben Buena
+  Copyright (c) 2025 Joeben Buena, Bahram Azami, Alex Blomberg, and Rhys Chisholm
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@
 
   - Streamlit: Apache License 2.0
   - Folium: MIT License
+  - streamlit-folium: MIT License
   - Plotly: MIT License
   - PyTorch: BSD 3-Clause License
   - Pandas: BSD 3-Clause License
@@ -35,10 +36,22 @@
   - Scikit-learn: BSD 3-Clause License
   - Requests: Apache License 2.0
 
+  External Resources
+  ==================
+
+  - Inter Font Family: SIL Open Font License 1.1 (Google Fonts)
+    https://fonts.google.com/specimen/Inter
+  - OpenStreetMap: Open Data Commons Open Database License (ODbL)
+    Map tiles used for geographic visualization
+    © OpenStreetMap contributors - https://www.openstreetmap.org/copyright
+  - Google Maps Tiles: Used for map visualization via Folium
+    Subject to Google Maps Platform Terms of Service
+
   Data Sources
   ============
 
   - Weather data provided by Visual Crossing Weather API
+    https://www.visualcrossing.com/
   - Suburb coordinates sourced from Wikipedia articles for each respective Maribyrnong City Council suburb
   - Flood risk zone boundaries based on Maribyrnong City Council area geographic data
   - Historical weather patterns for flood risk assessment
