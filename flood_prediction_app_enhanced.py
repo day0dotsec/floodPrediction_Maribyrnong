@@ -968,7 +968,7 @@ def create_progress_bar(percentage, label):
 def calculate_risk_severity_from_weather(weather_data, forecast_days_data=None):
     """
     Calculate 3-class risk severity from current weather conditions
-    Uses trained models with priority: LSTM > Logistic Regression > Rule-based
+    Uses trained models with priority: Logistic Regression > LSTM > Rule-based
 
     Args:
         weather_data: Current weather conditions dictionary
@@ -978,28 +978,28 @@ def calculate_risk_severity_from_weather(weather_data, forecast_days_data=None):
     """
     import numpy as np
 
-    # Priority 1: Check if we have a trained LSTM model and sufficient forecast data
+    # Priority 1: Check if we have a trained Logistic Regression model
     model_type = "Rule-based"
-    if ('trained_lstm_model' in st.session_state and
-        forecast_days_data is not None and
-        len(forecast_days_data) >= 7):
-
-        # Try LSTM prediction first
-        lstm_result = predict_risk_with_lstm(forecast_days_data)
-        if lstm_result is not None:
-            risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence = lstm_result
-            model_type = "LSTM Neural Network"
-            # Convert confidence to risk_score equivalent (0-10 scale)
-            risk_score = (risk_level_int - 1) * 3.5 + (confidence * 2.5)
-            return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence
-
-    # Priority 2: Check if we have a trained Logistic Regression model
     if 'trained_lr_model' in st.session_state:
-        # Try Logistic Regression prediction
+        # Try Logistic Regression prediction first
         lr_result = predict_risk_with_lr(weather_data)
         if lr_result is not None:
             risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence = lr_result
             model_type = "Logistic Regression"
+            # Convert confidence to risk_score equivalent (0-10 scale)
+            risk_score = (risk_level_int - 1) * 3.5 + (confidence * 2.5)
+            return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence
+
+    # Priority 2: Check if we have a trained LSTM model and sufficient forecast data
+    if ('trained_lstm_model' in st.session_state and
+        forecast_days_data is not None and
+        len(forecast_days_data) >= 7):
+
+        # Try LSTM prediction
+        lstm_result = predict_risk_with_lstm(forecast_days_data)
+        if lstm_result is not None:
+            risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, confidence = lstm_result
+            model_type = "LSTM Neural Network"
             # Convert confidence to risk_score equivalent (0-10 scale)
             risk_score = (risk_level_int - 1) * 3.5 + (confidence * 2.5)
             return risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence
@@ -1880,7 +1880,7 @@ def main():
         with st.sidebar:
             model_type = st.selectbox(
                 "Model Type",
-                ["LSTM Neural Network", "Logistic Regression", "K-Means Clustering"],
+                ["Logistic Regression", "LSTM Neural Network", "K-Means Clustering"],
                 format_func=lambda x: f"🔬 {x}"
             )
         
@@ -1971,6 +1971,7 @@ def main():
                                     <div style="color: #1e293b; margin: 0.5rem 0;">🎯 <strong>Dropout:</strong> 20% for regularization</div>
                                     <div style="color: #1e293b; margin: 0.5rem 0;">🔀 <strong>Activation:</strong> LogSoftmax for multi-class</div>
                                     <div style="color: #1e293b; margin: 0.5rem 0;">📋 <strong>Loss Function:</strong> Negative Log Likelihood</div>
+                                    <div style="color: #1e293b; margin: 0.5rem 0;">🔄 <strong>Training Epochs:</strong> 150</div>
                                 </div>
                             </div>
                             """, unsafe_allow_html=True)
