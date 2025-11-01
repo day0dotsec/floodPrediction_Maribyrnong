@@ -15,6 +15,16 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 import warnings
 import folium
 from streamlit_folium import st_folium
+
+# Optional SendGrid import for email alerts
+try:
+    from sendgrid import SendGridAPIClient
+    from sendgrid.helpers.mail import Mail, Email, To, Content
+    SENDGRID_AVAILABLE = True
+except ImportError as e:
+    SENDGRID_AVAILABLE = False
+    SENDGRID_IMPORT_ERROR = str(e)
+
 warnings.filterwarnings('ignore')
 
 # Configuration - Secure API key handling
@@ -1559,6 +1569,219 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
 
     return m
 
+def send_email_alert(to_email, subject, html_content, from_email="noreply@maribyrnongflood.com"):
+    """
+    Send email alert using SendGrid API
+
+    Args:
+        to_email: Recipient email address
+        subject: Email subject line
+        html_content: HTML content of the email
+        from_email: Sender email address
+
+    Returns:
+        tuple: (success: bool, message: str)
+    """
+    try:
+        # Check if SendGrid is available
+        if not SENDGRID_AVAILABLE:
+            return False, f"SendGrid library not installed. Error: {SENDGRID_IMPORT_ERROR}"
+
+        # Get SendGrid API key from secrets
+        sendgrid_api_key = st.secrets.get("SENDGRID_API_KEY", None)
+
+        if not sendgrid_api_key:
+            return False, "SendGrid API key not configured. Please add SENDGRID_API_KEY to secrets."
+
+        # Create email message
+        message = Mail(
+            from_email=Email(from_email),
+            to_emails=To(to_email),
+            subject=subject,
+            html_content=Content("text/html", html_content)
+        )
+
+        # Send email
+        sg = SendGridAPIClient(sendgrid_api_key)
+        response = sg.send(message)
+
+        if response.status_code in [200, 201, 202]:
+            return True, f"Email sent successfully! Status: {response.status_code}"
+        else:
+            return False, f"Failed to send email. Status: {response.status_code}"
+
+    except Exception as e:
+        return False, f"Error sending email: {str(e)}"
+
+
+def format_alert_email_html(suburb, risk_level, risk_icon, risk_color, weather_data, forecast_data=None):
+    """
+    Format HTML email content for flood risk alert
+
+    Args:
+        suburb: Suburb name
+        risk_level: Risk level (LOW, MEDIUM, HIGH)
+        risk_icon: Risk icon emoji
+        risk_color: Risk color hex code
+        weather_data: Current weather data dictionary
+        forecast_data: Optional forecast data
+
+    Returns:
+        str: HTML formatted email content
+    """
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: 'Inter', Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; }}
+            .container {{ max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); overflow: hidden; }}
+            .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; color: #ffffff; }}
+            .header h1 {{ margin: 0; font-size: 28px; font-weight: 700; }}
+            .alert-box {{ background-color: {risk_color}15; border-left: 4px solid {risk_color}; padding: 20px; margin: 20px; border-radius: 8px; }}
+            .alert-title {{ color: {risk_color}; font-size: 24px; font-weight: 700; margin: 0 0 10px 0; }}
+            .content {{ padding: 20px; color: #1e293b; }}
+            .weather-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }}
+            .weather-item {{ background-color: #f8fafc; padding: 15px; border-radius: 8px; }}
+            .weather-label {{ font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }}
+            .weather-value {{ font-size: 20px; font-weight: 700; color: #1e293b; }}
+            .footer {{ background-color: #f1f5f9; padding: 20px; text-align: center; color: #64748b; font-size: 12px; }}
+            .button {{ display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 600; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🌊 Maribyrnong Flood Alert</h1>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">Automated Flood Risk Notification</p>
+            </div>
+
+            <div class="alert-box">
+                <p class="alert-title">{risk_icon} {risk_level} FLOOD RISK DETECTED</p>
+                <p style="margin: 0; color: #475569; font-size: 16px;">
+                    <strong>Location:</strong> {suburb}, Maribyrnong City Council<br>
+                    <strong>Time:</strong> {current_time}
+                </p>
+            </div>
+
+            <div class="content">
+                <h2 style="color: #1e293b; font-size: 20px; margin-top: 0;">Current Weather Conditions</h2>
+
+                <div class="weather-grid">
+                    <div class="weather-item">
+                        <div class="weather-label">Temperature</div>
+                        <div class="weather-value">{weather_data.get('temp', 'N/A')}°C</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-label">Humidity</div>
+                        <div class="weather-value">{weather_data.get('humidity', 'N/A')}%</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-label">Precipitation</div>
+                        <div class="weather-value">{weather_data.get('precip', 0)} mm</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-label">Wind Speed</div>
+                        <div class="weather-value">{weather_data.get('windspeed', 'N/A')} km/h</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #1e293b; font-size: 18px;">Recommended Actions:</h3>
+                <ul style="color: #475569; line-height: 1.8;">
+    """
+
+    if risk_level == "HIGH":
+        html += """
+                    <li>⚠️ <strong>Immediate action required</strong> - Monitor local emergency services</li>
+                    <li>📱 Stay informed through official channels</li>
+                    <li>🏠 Prepare emergency supplies and evacuation plan</li>
+                    <li>🚗 Avoid low-lying areas and flooded roads</li>
+                    <li>👨‍👩‍👧‍👦 Check on vulnerable neighbors</li>
+        """
+    elif risk_level == "MEDIUM":
+        html += """
+                    <li>👀 Monitor weather conditions closely</li>
+                    <li>📋 Review your flood emergency plan</li>
+                    <li>🔔 Stay alert for further updates</li>
+                    <li>🌧️ Avoid unnecessary travel in low-lying areas</li>
+        """
+    else:
+        html += """
+                    <li>✅ Current risk level is low</li>
+                    <li>📊 Continue monitoring conditions</li>
+                    <li>🌦️ Stay informed of weather updates</li>
+        """
+
+    html += """
+                </ul>
+
+                <div style="text-align: center;">
+                    <a href="#" class="button">View Full Dashboard</a>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p style="margin: 0;">
+                    This is an automated alert from the Maribyrnong Flood Prediction System.<br>
+                    Powered by AI and real-time weather data.
+                </p>
+                <p style="margin: 10px 0 0 0; font-size: 11px;">
+                    To unsubscribe or manage alert settings, please contact your administrator.
+                </p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    return html
+
+
+def check_alert_conditions(risk_level_int, alert_threshold):
+    """
+    Check if current conditions meet alert threshold
+
+    Args:
+        risk_level_int: Current risk level (1=Low, 2=Medium, 3=High)
+        alert_threshold: Threshold setting (1=Low, 2=Medium, 3=High)
+
+    Returns:
+        bool: True if alert should be sent
+    """
+    return risk_level_int >= alert_threshold
+
+
+def log_alert(suburb, risk_level, recipient_email, status, message):
+    """
+    Log alert to session state history
+
+    Args:
+        suburb: Suburb name
+        risk_level: Risk level
+        recipient_email: Recipient email
+        status: Success or failure
+        message: Status message
+    """
+    if 'alert_history' not in st.session_state:
+        st.session_state.alert_history = []
+
+    alert_entry = {
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'suburb': suburb,
+        'risk_level': risk_level,
+        'recipient': recipient_email,
+        'status': 'Success' if status else 'Failed',
+        'message': message
+    }
+
+    st.session_state.alert_history.insert(0, alert_entry)
+
+    # Keep only last 50 alerts
+    if len(st.session_state.alert_history) > 50:
+        st.session_state.alert_history = st.session_state.alert_history[:50]
+
 def main():
     # Hero Header
     st.markdown("""
@@ -1583,7 +1806,7 @@ def main():
         
         main_section = st.selectbox(
             "Main Section",
-            ["🏠 Home & Current Weather", "🤖 Machine Learning Models", "📊 Data Analysis", "🔍 Insights & Predictions"],
+            ["🏠 Home & Current Weather", "🤖 Machine Learning Models", "📊 Data Analysis", "🔍 Insights & Predictions", "🔔 Alerts & Notifications"],
             format_func=lambda x: x,
             label_visibility="collapsed"
         )
@@ -3279,7 +3502,383 @@ def main():
                     {''.join([f'<div style="margin: 0.5rem 0; padding-left: 1rem; color: #1e293b;">• {item}</div>' for item in rec['items']])}
                 </div>
                 """, unsafe_allow_html=True)
-    
+
+    elif main_section == "🔔 Alerts & Notifications":
+        st.markdown('<h2 class="section-header">Flood Alert System</h2>', unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="metric-card">
+            <h3 style="color: #667eea; font-size: 1.5rem; margin-bottom: 1rem;">📧 Email Alert Configuration</h3>
+            <p style="font-size: 1.1rem; color: #64748b; line-height: 1.6;">
+                Configure automated email alerts to receive notifications when flood risk levels exceed your specified thresholds.
+                Powered by SendGrid for reliable email delivery.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Initialize session state for alert settings
+        if 'alert_enabled' not in st.session_state:
+            st.session_state.alert_enabled = False
+        if 'alert_email' not in st.session_state:
+            st.session_state.alert_email = ""
+        if 'alert_sender_email' not in st.session_state:
+            st.session_state.alert_sender_email = ""
+        if 'alert_threshold' not in st.session_state:
+            st.session_state.alert_threshold = 2  # Medium by default
+        if 'alert_suburb' not in st.session_state:
+            st.session_state.alert_suburb = "Maribyrnong"
+
+        # Check SendGrid configuration
+        has_sendgrid_key = 'SENDGRID_API_KEY' in st.secrets
+        has_sendgrid = SENDGRID_AVAILABLE and has_sendgrid_key
+
+        if not SENDGRID_AVAILABLE:
+            st.markdown(f"""
+            <div class="alert-box alert-warning">
+                <strong>⚠️ SendGrid Library Not Installed</strong><br>
+                Please install the SendGrid package:<br><br>
+                <code>pip install sendgrid</code><br><br>
+                Error: {SENDGRID_IMPORT_ERROR}
+            </div>
+            """, unsafe_allow_html=True)
+        elif not has_sendgrid_key:
+            st.markdown("""
+            <div class="alert-box alert-warning">
+                <strong>⚠️ SendGrid API Key Not Configured</strong><br>
+                Please add your SendGrid API key to <code>.streamlit/secrets.toml</code>:<br><br>
+                <code>SENDGRID_API_KEY = "your_api_key_here"</code><br><br>
+                Get your free API key at: <a href="https://sendgrid.com" target="_blank">sendgrid.com</a>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div class="alert-box alert-success">
+                <strong>✅ SendGrid Configured</strong><br>
+                Email alerts are ready to use!
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Important notice about sender verification
+        if has_sendgrid:
+            st.markdown("""
+            <div class="alert-box alert-warning" style="background-color: #fff3cd; border-left-color: #ffc107;">
+                <strong>⚠️ IMPORTANT: Sender Email Verification Required</strong><br>
+                Before sending emails, you must verify your sender email in SendGrid:<br><br>
+                1️⃣ Go to <a href="https://app.sendgrid.com/settings/sender_auth" target="_blank">SendGrid → Settings → Sender Authentication</a><br>
+                2️⃣ Click "<strong>Verify a Single Sender</strong>"<br>
+                3️⃣ Enter your email address and fill in the form<br>
+                4️⃣ Check your email and click the verification link<br>
+                5️⃣ Use that verified email in the "Sender Email" field below<br><br>
+                <strong>Common Error:</strong> "HTTP 403 Forbidden" means your sender email is not verified.
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Alert Configuration Panel
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("### ⚙️ Alert Settings")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            # Recipient email address input
+            alert_email = st.text_input(
+                "📧 Recipient Email Address",
+                value=st.session_state.alert_email,
+                placeholder="your.email@example.com",
+                help="Enter the email address where alerts should be sent"
+            )
+            st.session_state.alert_email = alert_email
+
+            # Sender email address input
+            alert_sender_email = st.text_input(
+                "📤 Sender Email (Verified in SendGrid)",
+                value=st.session_state.alert_sender_email,
+                placeholder="verified@yourdomain.com",
+                help="IMPORTANT: Must be verified in SendGrid Settings → Sender Authentication"
+            )
+            st.session_state.alert_sender_email = alert_sender_email
+
+            # Alert threshold
+            threshold_options = {
+                "Low Risk or Higher": 1,
+                "Medium Risk or Higher": 2,
+                "High Risk Only": 3
+            }
+
+            selected_threshold = st.selectbox(
+                "🎯 Alert Threshold",
+                options=list(threshold_options.keys()),
+                index=1,  # Default to Medium
+                help="Send alerts when risk level meets or exceeds this threshold"
+            )
+            st.session_state.alert_threshold = threshold_options[selected_threshold]
+
+        with col2:
+            # Suburb selection for alerts
+            alert_suburb = st.selectbox(
+                "📍 Monitor Suburb",
+                options=list(MARIBYRNONG_SUBURBS.keys()),
+                index=list(MARIBYRNONG_SUBURBS.keys()).index(st.session_state.alert_suburb),
+                help="Select which suburb to monitor for flood risk"
+            )
+            st.session_state.alert_suburb = alert_suburb
+
+            # Enable/disable alerts
+            alert_enabled = st.checkbox(
+                "🔔 Enable Automatic Alerts",
+                value=st.session_state.alert_enabled,
+                help="When enabled, alerts will be sent automatically based on your settings"
+            )
+            st.session_state.alert_enabled = alert_enabled
+
+        # Test Email Section
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("### 🧪 Test Alert System")
+
+        col1, col2, col3 = st.columns([2, 1, 1])
+
+        with col1:
+            st.markdown("""
+            <div class="alert-box alert-info">
+                <strong>📬 Send a Test Email</strong><br>
+                Verify your email configuration by sending a test flood alert to your email address.
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col2:
+            if st.button("📧 Send Test Email", use_container_width=True, disabled=not has_sendgrid):
+                if not alert_email or '@' not in alert_email:
+                    st.error("⚠️ Please enter a valid recipient email address")
+                elif not alert_sender_email or '@' not in alert_sender_email:
+                    st.error("⚠️ Please enter a verified sender email address")
+                else:
+                    with st.spinner("Sending test email..."):
+                        # Create test weather data
+                        test_weather = {
+                            'temp': 18.5,
+                            'humidity': 85,
+                            'precip': 12.5,
+                            'windspeed': 25
+                        }
+
+                        # Format test email
+                        html_content = format_alert_email_html(
+                            suburb=alert_suburb,
+                            risk_level="MEDIUM",
+                            risk_icon="🟡",
+                            risk_color="#d97706",
+                            weather_data=test_weather
+                        )
+
+                        # Send email with verified sender
+                        success, message = send_email_alert(
+                            to_email=alert_email,
+                            subject=f"🧪 TEST ALERT - Maribyrnong Flood Risk - {alert_suburb}",
+                            html_content=html_content,
+                            from_email=alert_sender_email
+                        )
+
+                        if success:
+                            st.success(f"✅ {message}")
+                            log_alert(alert_suburb, "MEDIUM (TEST)", alert_email, True, "Test email sent successfully")
+                        else:
+                            st.error(f"❌ {message}")
+                            log_alert(alert_suburb, "MEDIUM (TEST)", alert_email, False, message)
+
+        with col3:
+            if st.button("🔄 Clear History", use_container_width=True):
+                if 'alert_history' in st.session_state:
+                    st.session_state.alert_history = []
+                    st.success("✅ Alert history cleared")
+
+        # Manual Alert Trigger Section
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("### 🚨 Manual Alert")
+
+        st.markdown("""
+        <div class="alert-box alert-info">
+            <strong>🎯 Send Alert Based on Current Conditions</strong><br>
+            Check current weather conditions and send an alert if risk threshold is met.
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🔍 Check Conditions & Send Alert", use_container_width=False):
+            if not alert_email or '@' not in alert_email:
+                st.error("⚠️ Please enter a valid recipient email address first")
+            elif not alert_sender_email or '@' not in alert_sender_email:
+                st.error("⚠️ Please enter a verified sender email address first")
+            elif not has_sendgrid:
+                st.error("⚠️ SendGrid API key not configured")
+            else:
+                with st.spinner(f"Fetching weather data for {alert_suburb}..."):
+                    weather_data = fetch_weather_data(alert_suburb)
+
+                    if weather_data:
+                        current = weather_data['currentConditions']
+                        today_forecast = weather_data['days'][0]
+
+                        # Prepare weather data
+                        current_weather = {
+                            'precip': current.get('precip', 0),
+                            'humidity': current.get('humidity', 0),
+                            'sealevelpressure': current.get('sealevelpressure', 1013),
+                            'windspeed': current.get('windspeed', 0),
+                            'tempmax': today_forecast.get('tempmax', current.get('temp', 20)),
+                            'tempmin': today_forecast.get('tempmin', current.get('temp', 20)),
+                            'cloudcover': current.get('cloudcover', 0),
+                            'precipprob': current.get('precipprob', 0),
+                            'temp': current.get('temp', 0)
+                        }
+
+                        # Calculate risk
+                        forecast_data = None
+                        if len(weather_data['days']) >= 7:
+                            forecast_data = weather_data['days'][:7]
+
+                        result = calculate_risk_severity_from_weather(current_weather, forecast_data)
+                        risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, confidence = result
+
+                        # Display current risk
+                        st.markdown(f"""
+                        <div class="metric-card {risk_class}">
+                            <h3>Current Risk Assessment - {alert_suburb}</h3>
+                            <h2 style="color: {risk_color};">{risk_icon} {risk_level_name}</h2>
+                            <p>Risk Score: {risk_score:.2f}/10.0 | Model: {model_type}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                        # Check if alert should be sent
+                        if check_alert_conditions(risk_level_int, st.session_state.alert_threshold):
+                            with st.spinner("Sending alert email..."):
+                                # Format email
+                                html_content = format_alert_email_html(
+                                    suburb=alert_suburb,
+                                    risk_level=risk_level_name,
+                                    risk_icon=risk_icon,
+                                    risk_color=risk_color,
+                                    weather_data=current_weather
+                                )
+
+                                # Send email with verified sender
+                                success, message = send_email_alert(
+                                    to_email=alert_email,
+                                    subject=f"🌊 FLOOD ALERT - {risk_level_name} Risk Detected - {alert_suburb}",
+                                    html_content=html_content,
+                                    from_email=alert_sender_email
+                                )
+
+                                if success:
+                                    st.success(f"✅ Alert sent! {message}")
+                                    log_alert(alert_suburb, risk_level_name, alert_email, True, "Manual alert sent successfully")
+                                else:
+                                    st.error(f"❌ Failed to send alert: {message}")
+                                    log_alert(alert_suburb, risk_level_name, alert_email, False, message)
+                        else:
+                            threshold_names = {1: "LOW", 2: "MEDIUM", 3: "HIGH"}
+                            st.info(f"ℹ️ Current risk ({risk_level_name}) is below your alert threshold ({threshold_names[st.session_state.alert_threshold]}). No alert sent.")
+                    else:
+                        st.error("❌ Failed to fetch weather data. Please try again later.")
+
+        # Alert History Section
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("### 📜 Alert History")
+
+        if 'alert_history' in st.session_state and len(st.session_state.alert_history) > 0:
+            # Display alert statistics
+            col1, col2, col3 = st.columns(3)
+
+            total_alerts = len(st.session_state.alert_history)
+            successful_alerts = sum(1 for alert in st.session_state.alert_history if alert['status'] == 'Success')
+            failed_alerts = total_alerts - successful_alerts
+
+            with col1:
+                st.markdown(create_custom_metric_card(
+                    "Total Alerts",
+                    str(total_alerts),
+                    "All time",
+                    "📧",
+                    ""
+                ), unsafe_allow_html=True)
+
+            with col2:
+                st.markdown(create_custom_metric_card(
+                    "Successful",
+                    str(successful_alerts),
+                    f"{(successful_alerts/total_alerts*100):.0f}% success rate",
+                    "✅",
+                    ""
+                ), unsafe_allow_html=True)
+
+            with col3:
+                st.markdown(create_custom_metric_card(
+                    "Failed",
+                    str(failed_alerts),
+                    "Delivery errors",
+                    "❌",
+                    ""
+                ), unsafe_allow_html=True)
+
+            # Display history table
+            st.markdown('<br>', unsafe_allow_html=True)
+            history_df = pd.DataFrame(st.session_state.alert_history)
+            st.dataframe(
+                history_df,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "timestamp": "Timestamp",
+                    "suburb": "Suburb",
+                    "risk_level": "Risk Level",
+                    "recipient": "Recipient",
+                    "status": st.column_config.TextColumn(
+                        "Status",
+                        help="Delivery status"
+                    ),
+                    "message": "Message"
+                }
+            )
+        else:
+            st.markdown("""
+            <div class="alert-box alert-info">
+                <strong>📭 No Alert History</strong><br>
+                Alert history will appear here once you send your first alert.
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Information Panel
+        st.markdown('<br>', unsafe_allow_html=True)
+        st.markdown("### ℹ️ About Alert System")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("""
+            <div class="metric-card">
+                <h4 style="color: #2563eb; margin-bottom: 1rem;">📧 Email Delivery</h4>
+                <div style="color: #1e293b; line-height: 1.8;">
+                    <p>• Powered by SendGrid API</p>
+                    <p>• Professional HTML-formatted emails</p>
+                    <p>• Real-time weather data included</p>
+                    <p>• Risk-specific recommendations</p>
+                    <p>• Reliable delivery tracking</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with col2:
+            st.markdown("""
+            <div class="metric-card">
+                <h4 style="color: #2563eb; margin-bottom: 1rem;">🎯 Alert Triggers</h4>
+                <div style="color: #1e293b; line-height: 1.8;">
+                    <p>• Manual: Check conditions on-demand</p>
+                    <p>• Threshold-based: Low/Medium/High</p>
+                    <p>• AI-powered risk assessment</p>
+                    <p>• Multi-model predictions</p>
+                    <p>• Suburb-specific monitoring</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
     # Enhanced Footer
     st.markdown("""
     <div class="footer">
