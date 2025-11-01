@@ -7,3 +7,4 @@ scikit-learn==1.7.0
 folium==0.20.0
 streamlit-folium==0.25.1
 torch==2.8.0
+sendgrid==6.11.0
