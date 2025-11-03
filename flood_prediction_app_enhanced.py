@@ -1919,9 +1919,9 @@ def main():
                 forecast_data = None
                 if weather_data and len(weather_data['days']) >= 7:
                     forecast_data = weather_data['days'][:7]  # First 7 days for sequence
-                
+
                 result = calculate_risk_severity_from_weather(current_weather, forecast_data)
-                risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, lstm_confidence = result
+                risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, model_confidence = result
 
                 # Model status indicator
                 if model_type == "LSTM Neural Network":
@@ -3187,9 +3187,9 @@ def main():
                 forecast_data = None
                 if len(weather_data['days']) >= 7:
                     forecast_data = weather_data['days'][:7]  # First 7 days for sequence
-                
+
                 result = calculate_risk_severity_from_weather(current_weather, forecast_data)
-                risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, lstm_confidence = result
+                risk_level_int, risk_level_name, risk_class, risk_icon, risk_color, risk_score, model_type, model_confidence = result
 
                 # Model status indicator
                 if model_type == "LSTM Neural Network":
@@ -3240,7 +3240,7 @@ def main():
                             </div>
                             <div>
                                 <strong style="color: #1e293b;">Model Confidence:</strong><br>
-                                <span style="color: #0277bd; font-weight: 600;">{lstm_confidence*100:.1f}% confident</span>
+                                <span style="color: #0277bd; font-weight: 600;">{model_confidence*100:.1f}% confident</span>
                             </div>
                         </div>
                         <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #0277bd;">
@@ -3256,6 +3256,38 @@ def main():
                         <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748b; font-style: italic;">
                             The LSTM model analyzes complex temporal patterns in weather data that are difficult to capture with simple thresholds.
                             Risk score of {risk_score:.2f}/10.0 reflects learned patterns from {len(historical_df) if 'historical_df' in locals() else 'historical'} weather records.
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                elif model_type == "Logistic Regression":
+                    # Logistic Regression Model Analysis - Show statistical prediction with confidence
+                    st.markdown(f"""
+                    <div class="metric-card" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
+                        <h4 style="color: #0369a1; margin-bottom: 1rem;">📊 Logistic Regression Analysis</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <strong style="color: #1e293b;">Input Features:</strong><br>
+                                <small style="color: #64748b;">9 current weather variables</small>
+                            </div>
+                            <div>
+                                <strong style="color: #1e293b;">Model Confidence:</strong><br>
+                                <span style="color: #0369a1; font-weight: 600;">{model_confidence*100:.1f}% confident</span>
+                            </div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #0369a1;">
+                            <div style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
+                                <strong>Current Weather Conditions Analyzed:</strong><br>
+                                • Temperature range: {current_weather.get('tempmin', 'N/A')}°C - {current_weather.get('tempmax', 'N/A')}°C (current: {current_weather.get('temp', 'N/A')}°C)<br>
+                                • Precipitation: {current_weather.get('precip', 0):.1f}mm (probability: {current_weather.get('precipprob', 0):.0f}%)<br>
+                                • Atmospheric pressure: {current_weather.get('sealevelpressure', 1013):.1f}hPa<br>
+                                • Humidity: {current_weather.get('humidity', 0):.1f}%<br>
+                                • Wind speed: {current_weather.get('windspeed', 0):.1f}km/h<br>
+                                • Cloud cover: {current_weather.get('cloudcover', 0):.1f}%
+                            </div>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748b; font-style: italic;">
+                            The Logistic Regression model uses statistical relationships learned from historical data to predict flood risk class probabilities.
+                            Risk score of {risk_score:.2f}/10.0 is derived from the {risk_level_name.lower()} risk class prediction with {model_confidence*100:.1f}% confidence.
                         </p>
                     </div>
                     """, unsafe_allow_html=True)
