@@ -1648,7 +1648,7 @@ def format_alert_email_html(suburb, risk_level, risk_icon, risk_color, weather_d
             .weather-label {{ font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }}
             .weather-value {{ font-size: 20px; font-weight: 700; color: #1e293b; }}
             .footer {{ background-color: #f1f5f9; padding: 20px; text-align: center; color: #64748b; font-size: 12px; }}
-            .button {{ display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 600; }}
+            .button {{ display: inline-block; background-color: #60a5fa; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin: 20px 0; font-weight: 600; }}
         </style>
     </head>
     <body>
@@ -1718,7 +1718,7 @@ def format_alert_email_html(suburb, risk_level, risk_icon, risk_color, weather_d
                 </ul>
 
                 <div style="text-align: center;">
-                    <a href="#" class="button">View Full Dashboard</a>
+                    <a href="https://maribyrnong-flood-prediction.streamlit.app" class="button" style="color: #ffffff !important; text-decoration: none;">View Full Dashboard</a>
                 </div>
             </div>
 
