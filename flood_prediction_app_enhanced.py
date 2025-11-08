@@ -1513,13 +1513,11 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
             weather_lat, weather_lon = -37.7700, 144.8930
             suburb_name = "Maribyrnong"
 
-        # Calculate precipitation display value
+        # Get both precipitation values
         today_precip_forecast = today_forecast.get('precip', 0)
         current_precip_accumulated = current.get('precip', 0)
         # Use forecast precipprob as it's more reliable than current conditions
         precip_prob = today_forecast.get('precipprob', current.get('precipprob', 0))
-        display_precip = max(today_precip_forecast, current_precip_accumulated)
-        precip_label = "forecast today" if today_precip_forecast > current_precip_accumulated else "accumulated"
 
         # Add weather marker at selected suburb location
         weather_popup = f"""
@@ -1530,7 +1528,8 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
                 <p style="margin: 3px 0;"><strong>Humidity:</strong> {current.get('humidity', 'N/A')}%</p>
                 <p style="margin: 3px 0;"><strong>Conditions:</strong> {current.get('conditions', 'N/A')}</p>
                 <p style="margin: 3px 0;"><strong>Wind:</strong> {current.get('windspeed', 'N/A')} km/h</p>
-                <p style="margin: 3px 0;"><strong>Precipitation:</strong> {display_precip:.1f}mm ({precip_label})</p>
+                <p style="margin: 3px 0;"><strong>Precipitation (forecast):</strong> {today_precip_forecast:.1f}mm</p>
+                <p style="margin: 3px 0; color: #64748b; font-size: 0.9rem;">Accumulated: {current_precip_accumulated:.1f}mm</p>
                 <p style="margin: 3px 0;"><strong>Rain Chance:</strong> {precip_prob}%</p>
             </div>
         </div>
@@ -1893,21 +1892,19 @@ def main():
                 """, unsafe_allow_html=True)
             
             with col3:
-                # Get today's forecast precipitation for better real-time accuracy
+                # Get both precipitation values
                 today_precip_forecast = today_forecast.get('precip', 0)
                 current_precip_accumulated = current.get('precip', 0)
                 # Use forecast precipprob as it's more reliable than current conditions
                 precip_prob = today_forecast.get('precipprob', current.get('precipprob', 0))
 
-                # Show forecast if it's higher than accumulated (indicates ongoing/expected rain)
-                display_precip = max(today_precip_forecast, current_precip_accumulated)
-                precip_label = "forecast today" if today_precip_forecast > current_precip_accumulated else "accumulated"
-
                 st.markdown(f"""
                 <div class="weather-card">
                     <h3>🌧️ Precipitation</h3>
-                    <h2>{display_precip:.1f}mm</h2>
-                    <p>{precip_label.capitalize()} • {precip_prob}% chance</p>
+                    <h2>{today_precip_forecast:.1f}mm</h2>
+                    <p style="margin: 2px 0; font-size: 0.85rem;">Forecast today</p>
+                    <p style="margin: 2px 0; font-size: 0.85rem; color: #64748b;">Accumulated: {current_precip_accumulated:.1f}mm</p>
+                    <p style="margin-top: 5px;">{precip_prob}% chance</p>
                 </div>
                 """, unsafe_allow_html=True)
             
