@@ -1501,6 +1501,7 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
     # Add weather information if available
     if weather_data and 'currentConditions' in weather_data:
         current = weather_data['currentConditions']
+        today_forecast = weather_data['days'][0] if 'days' in weather_data and len(weather_data['days']) > 0 else {}
 
         # Get the exact coordinates for the selected suburb
         if selected_suburb in MARIBYRNONG_SUBURBS:
@@ -1512,6 +1513,14 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
             weather_lat, weather_lon = -37.7700, 144.8930
             suburb_name = "Maribyrnong"
 
+        # Calculate precipitation display value
+        today_precip_forecast = today_forecast.get('precip', 0)
+        current_precip_accumulated = current.get('precip', 0)
+        # Use forecast precipprob as it's more reliable than current conditions
+        precip_prob = today_forecast.get('precipprob', current.get('precipprob', 0))
+        display_precip = max(today_precip_forecast, current_precip_accumulated)
+        precip_label = "forecast today" if today_precip_forecast > current_precip_accumulated else "accumulated"
+
         # Add weather marker at selected suburb location
         weather_popup = f"""
         <div style="font-family: Inter, sans-serif; max-width: 250px;">
@@ -1521,7 +1530,8 @@ def create_maribyrnong_map(weather_data=None, selected_suburb="Maribyrnong"):
                 <p style="margin: 3px 0;"><strong>Humidity:</strong> {current.get('humidity', 'N/A')}%</p>
                 <p style="margin: 3px 0;"><strong>Conditions:</strong> {current.get('conditions', 'N/A')}</p>
                 <p style="margin: 3px 0;"><strong>Wind:</strong> {current.get('windspeed', 'N/A')} km/h</p>
-                <p style="margin: 3px 0;"><strong>Precipitation:</strong> {current.get('precip', 0)} mm</p>
+                <p style="margin: 3px 0;"><strong>Precipitation:</strong> {display_precip:.1f}mm ({precip_label})</p>
+                <p style="margin: 3px 0;"><strong>Rain Chance:</strong> {precip_prob}%</p>
             </div>
         </div>
         """
@@ -1883,11 +1893,21 @@ def main():
                 """, unsafe_allow_html=True)
             
             with col3:
+                # Get today's forecast precipitation for better real-time accuracy
+                today_precip_forecast = today_forecast.get('precip', 0)
+                current_precip_accumulated = current.get('precip', 0)
+                # Use forecast precipprob as it's more reliable than current conditions
+                precip_prob = today_forecast.get('precipprob', current.get('precipprob', 0))
+
+                # Show forecast if it's higher than accumulated (indicates ongoing/expected rain)
+                display_precip = max(today_precip_forecast, current_precip_accumulated)
+                precip_label = "forecast today" if today_precip_forecast > current_precip_accumulated else "accumulated"
+
                 st.markdown(f"""
                 <div class="weather-card">
                     <h3>🌧️ Precipitation</h3>
-                    <h2>{current.get('precip', 0)}mm</h2>
-                    <p>Probability: {current.get('precipprob', 0)}%</p>
+                    <h2>{display_precip:.1f}mm</h2>
+                    <p>{precip_label.capitalize()} • {precip_prob}% chance</p>
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -3247,7 +3267,7 @@ def main():
                             <div style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
                                 <strong>Key Weather Pattern Factors Analyzed:</strong><br>
                                 • Temperature trends (min/max/current): {current_weather.get('tempmin', 'N/A')}°C - {current_weather.get('tempmax', 'N/A')}°C<br>
-                                • Precipitation sequence: {current_weather.get('precip', 0):.1f}mm today<br>
+                                • Precipitation sequence: {max(today_forecast.get('precip', 0), current_weather.get('precip', 0)):.1f}mm today<br>
                                 • Atmospheric pressure: {current_weather.get('sealevelpressure', 1013):.1f}hPa<br>
                                 • Humidity & wind patterns: {current_weather.get('humidity', 0):.1f}%, {current_weather.get('windspeed', 0):.1f}km/h<br>
                                 • Cloud cover progression: {current_weather.get('cloudcover', 0):.1f}%
@@ -3278,7 +3298,7 @@ def main():
                             <div style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
                                 <strong>Current Weather Conditions Analyzed:</strong><br>
                                 • Temperature range: {current_weather.get('tempmin', 'N/A')}°C - {current_weather.get('tempmax', 'N/A')}°C (current: {current_weather.get('temp', 'N/A')}°C)<br>
-                                • Precipitation: {current_weather.get('precip', 0):.1f}mm (probability: {current_weather.get('precipprob', 0):.0f}%)<br>
+                                • Precipitation: {max(today_forecast.get('precip', 0), current_weather.get('precip', 0)):.1f}mm (probability: {today_forecast.get('precipprob', current_weather.get('precipprob', 0)):.0f}%)<br>
                                 • Atmospheric pressure: {current_weather.get('sealevelpressure', 1013):.1f}hPa<br>
                                 • Humidity: {current_weather.get('humidity', 0):.1f}%<br>
                                 • Wind speed: {current_weather.get('windspeed', 0):.1f}km/h<br>
@@ -3294,12 +3314,14 @@ def main():
                 else:
                     # Rule-based Analysis - Show the traditional factor breakdown
                     st.markdown("### Rule-based Factor Contributions")
-                    
+
                     # Calculate individual factor contributions
                     factor_scores = []
-                
-                    # Precipitation analysis
-                    precip = current_weather.get('precip', 0)
+
+                    # Precipitation analysis - use improved display logic
+                    today_precip_forecast = today_forecast.get('precip', 0)
+                    current_precip_accumulated = current_weather.get('precip', 0)
+                    precip = max(today_precip_forecast, current_precip_accumulated)  # Use whichever is higher for display
                     if precip > 25:
                         precip_score = 3.0
                         precip_status = f"🔴 CRITICAL: {precip:.1f}mm (>25mm threshold)"
