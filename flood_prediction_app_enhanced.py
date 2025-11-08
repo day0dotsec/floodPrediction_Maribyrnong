@@ -3193,6 +3193,7 @@ def main():
                     'humidity': current.get('humidity', 0),
                     'sealevelpressure': current.get('sealevelpressure', 1013),
                     'windspeed': current.get('windspeed', 0),
+                    'temp': current.get('temp', 20),
                     'tempmax': today_forecast.get('tempmax', current.get('temp', 20)),
                     'tempmin': today_forecast.get('tempmin', current.get('temp', 20)),
                     'cloudcover': current.get('cloudcover', 0),
