@@ -441,21 +441,21 @@ st.markdown("""
     .stTooltip,
     [data-baseweb="tooltip"],
     [role="tooltip"] {
-        background-color: #1e293b !important;
-        color: #ffffff !important;
-        border: 1px solid #374151 !important;
+        background-color: #ffffff !important;
+        color: #1e293b !important;
+        border: 1px solid #e2e8f0 !important;
         border-radius: 8px !important;
         padding: 0.5rem !important;
         font-size: 0.875rem !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     }
-    
+
     /* Tooltip arrow fix */
     .stTooltip::before,
     [data-baseweb="tooltip"]::before {
-        border-top-color: #1e293b !important;
+        border-top-color: #ffffff !important;
     }
-    
+
     /* Force all calendar and date input text to be dark */
     .stDateInput * {
         color: #1e293b !important;
@@ -667,7 +667,7 @@ st.markdown("""
     }
     
     /* Dropdown options styling - more specific selectors */
-    div[data-baseweb="popover"] {
+    div[data-baseweb="popover"]:not([role="tooltip"]) {
         background-color: #ffffff !important;
         border: 1px solid #d1d5db !important;
     }
