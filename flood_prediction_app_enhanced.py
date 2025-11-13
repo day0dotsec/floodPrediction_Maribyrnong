@@ -1056,13 +1056,24 @@ def calculate_risk_severity_from_weather(weather_data, forecast_days_data=None):
     if weather_data.get('cloudcover', 0) > 90:
         risk_score += 0.5
     
-    # Precipitation probability (even without actual precip, high probability is concerning)
+    # Precipitation probability scoring (additive with precipitation amount)
     precipprob = weather_data.get('precipprob', 0)
     precip = weather_data.get('precip', 0)
+
+    # Base probability risk (forecast warning)
+    if precipprob > 90:
+        risk_score += 1.0  # Very high probability - rain is almost certain
+    elif precipprob > 80:
+        risk_score += 0.5  # High probability - rain is likely
+    elif precipprob > 70:
+        risk_score += 0.25  # Moderate-high probability
+
+    # Compound risk: high probability coinciding with actual precipitation
+    # This adds ADDITIONAL risk when forecast and reality align
     if precipprob > 80 and precip > 5:
-        risk_score += 1.0
-    elif precipprob > 90:
-        risk_score += 0.5
+        risk_score += 1.0  # Confirmed: high probability + significant precipitation
+    elif precipprob > 70 and precip > 10:
+        risk_score += 0.75  # Even moderate probability with heavy precip is very concerning
     
     # Convert risk score to 3-class labels
     if risk_score >= 6:
